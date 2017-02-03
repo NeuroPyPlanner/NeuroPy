@@ -11,7 +11,7 @@ A personalized priority app to support a *Cognitive Behavioral Therapy* (CBT) ap
 
 *Neuropy* Considers what the habit/disorder the user wants to treat with CBT, along with medication, it's half-life and peak periods. Also works around black-out periods on user's schedule by syncing with Google Calender, personal preference or most productive period of the day for user, and finally considers time commitments for each activity. Each "TO-DO" will be ranked considering these aspects and will be worked into periods of the day.
 
-version-0.1 (in active development) Keywords: Python, Pyramid, Postgresql, Jinja2, JavaScript
+version-0.1 (in active development) Keywords: 
 
 USER STORIES:
 
