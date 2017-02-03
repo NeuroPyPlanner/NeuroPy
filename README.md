@@ -4,9 +4,8 @@ Personalized CBT-based priority planner
 Creators:
 
 Amos Bolder Claire Gatenby Patrick Saunders Sera Smith
-URL:
 
-http://
+URL: http://
 
 A personalized priority app to support a *Cognitive Behavioral Therapy* (CBT) approach to efficiently organize your day according to a struggle/disorder that is effectively treated by CBT. CBT is a goal-oriented pyschotherapy treatment, taking a hands-on approach to problem solving. Goal of CBT is to change the patterns of thinking or behavior that are behind a person's difficulties, modifying their feelings and therefore their thinking and behavior overtime.
 
