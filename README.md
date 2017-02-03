@@ -13,5 +13,7 @@ A personalized priority app to support a *Cognitive Behavioral Therapy* (CBT) ap
 
 version-0.1 (in active development) Keywords: 
 
+No medical data is stored by NeuroPy
+
 USER STORIES:
 
