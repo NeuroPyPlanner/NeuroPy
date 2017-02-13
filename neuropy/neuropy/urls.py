@@ -15,9 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin, auth
+from django.views.generic import TemplateView
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^$', TemplateView.as_view(template_name="neuropy/home.html"), name='home'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'^login/', auth.views.login, name='login'),
     url(r'^logout/', auth.views.logout, {'next_page': '/'}, name='logout'),
