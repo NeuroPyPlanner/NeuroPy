@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-from userprofile.models import UserProfile
+from userprofile.models import Profile
 
 
 @python_2_unicode_compatible
@@ -22,17 +22,17 @@ class Todo(models.Model):
         (3, 'Difficult'),
     )
 
-    self.title = models.CharField()
-    self.description =
-    self.date = 
-    self.duration = models.IntegerField(blank=True, null=True)
-    self.ease = models.IntegerField(choices=EASE_CHOICES)
-    self.priority = models.IntegerField(choices=PRIORITY_CHOICES)
-    self.owner =  models.ForeignKey(UserProfile,
-                                     related_name='todo',
-                                     blank=True,
-                                     null=True
-                                     )
+    title = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
+    date = models.DateTimeField(blank=True, null=True)
+    duration = models.PositiveIntegerField(default=1)
+    ease = models.PositiveIntegerField(choices=EASE_CHOICES, default=1)
+    priority = models.PositiveIntegerField(choices=PRIORITY_CHOICES, default=4)
+    owner = models.ForeignKey(Profile,
+                              related_name='todo',
+                              blank=True,
+                              null=True
+                              )
 
     def __str__(self):
         """String representation of Todo."""
