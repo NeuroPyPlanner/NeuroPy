@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'userprofile'
+    'userprofile',
+    'todo',
 ]
 
 MIDDLEWARE = [
@@ -80,10 +81,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'neuropy',
         'USER': os.environ.get("USER_NAME", ''),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
         'HOST': '127.0.0.1',
         'PORT': '5432',
         'TEST': {
-            'NAME': 'test_imager'
+            'NAME': 'test_neuropy'
         }
     }
 }
