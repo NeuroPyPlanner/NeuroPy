@@ -1,0 +1,64 @@
+[{
+          "fields": {
+            "name": "Adderall",
+            "type": "stimulant",
+            "half_life": "",
+            "time_administerd": "",
+            "ramp_up": 1,
+            // "Ease_priority_matrix":,
+          },
+          "model": "medications.medication",
+          "pk": 0
+        },
+        {
+          "fields": {
+            "name": "Concerta",
+            "type": "stimulant",
+            "half_life": "",
+            "time_administerd": "",
+            "ramp_up": 2,
+            "peak_period": 6,
+            // "Ease_priority_matrix":,
+          },
+          "model": "medications.medication",
+          "pk": 1
+        },
+        {
+          "fields": {
+            "name": "Focalin",
+            "type": "stimulant",
+            "half_life": "",
+            "time_administerd": "",
+            "ramp_up": 2,
+            "peak_period": 5,
+            // "Ease_priority_matrix":,
+          },
+          "model": "medications.medication",
+          "pk": 2
+        },
+        {
+          "fields": {
+            "name": "Ritalin",
+            "type": "stimulant",
+            "half_life": "",
+            "time_administerd": "",
+            "ramp_up": 2,
+            "peak_period": 4.5,
+            // "Ease_priority_matrix":,
+          },
+          "model": "medications.medication",
+          "pk": 2
+        },
+        {
+          "fields": {
+            "name": "VyVance",
+            "type": "stimulant",
+            "half_life": "",
+            "time_administerd": "",
+            "ramp_up": 1,
+            "peak_period": 6,
+            // "Ease_priority_matrix":,
+          },
+          "model": "medications.medication",
+          "pk": 2
+        }]
