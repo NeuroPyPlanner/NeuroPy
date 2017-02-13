@@ -56,7 +56,7 @@ class ProfileTestCase(TestCase):
     def test_user_sees_profile(self):
         """Test that the user model is related to a profile model."""
         user = self.users[0]
-        self.assertIsInstance(str(user.profile, Profile))
+        self.assertIsInstance(user.profile, Profile)
         self.assertTrue(hasattr(user, 'profile'))
 
     def test_user_in_group(self):
@@ -82,6 +82,7 @@ class FrontendTestCases(TestCase):
 
     def test_login_redirect_code(self):
         """Test built-in login route redirects properly."""
+        add_user_group()
         user_register = UserFactory.create()
         user_register.is_active = True
         user_register.username = "username"
