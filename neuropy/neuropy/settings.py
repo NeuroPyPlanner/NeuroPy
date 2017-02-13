@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'userprofile',
+    'todo',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +83,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '5432',
         'TEST': {
-            'NAME': 'test_imager'
+            'NAME': 'test_neuropy'
         }
     }
 }
