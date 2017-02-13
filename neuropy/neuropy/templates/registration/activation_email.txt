@@ -1,0 +1,2 @@
+Click here to register at imagersite:
+http://{{ site.domain }}{% url "registration_activate" activation_key %}
