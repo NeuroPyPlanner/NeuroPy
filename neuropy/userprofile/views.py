@@ -13,3 +13,21 @@ class ProfileView(detail.DetailView):
     def get_object(self):
         """Return logged in user."""
         return self.request.user
+
+
+class EditProfile(UpdateView):
+    """Add Album."""
+
+    template_name = 'userprofile/edit_profile.html'
+    model = Profile
+    fields = [
+        'active_period_start',
+        'active_period_end',
+        'peak_period',
+        'dose_time'
+    ]
+    success_url = reverse_lazy('profile')
+
+    def get_object(self):
+        """Return logged in users profile."""
+        return self.request.user.profile
