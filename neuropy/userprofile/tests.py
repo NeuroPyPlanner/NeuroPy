@@ -65,6 +65,17 @@ class ProfileTestCase(TestCase):
         group = user.groups.first()
         self.assertTrue(group.name == 'user')
 
+    def test_profile_has_attributes(self):
+        """Test that the profile has attributes and assigns defaults."""
+        # import pdb; pdb.set_trace()
+        users = self.users
+        attributes = [
+            'active_period_start', 'active_period_end', 'peak_period', 'dose_time'
+        ]
+        for user in users:
+            for attribute in attributes:
+                self.assertTrue(hasattr(user.profile, attribute))
+
 
 class FrontendTestCases(TestCase):
     """Test the frontend of the imager_profile site."""
