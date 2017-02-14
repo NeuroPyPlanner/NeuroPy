@@ -1,5 +1,14 @@
 {% extends 'neuropy/layout.html' %}
 {% block content %}
+<div class="row">
+        <div class='page-header'>
+            <div class='btn-toolbar pull-right'>
+                <div class='btn-group'>
+                </div>
+        </div>
+        <h1>Schedule a Todo item</h1>
+        </div>
+</div>
 <section>
     <form method="POST">
         {% csrf_token %}
