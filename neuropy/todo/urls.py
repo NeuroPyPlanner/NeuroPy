@@ -7,7 +7,7 @@ from todo.views import(
 
 urlpatterns = [
     url(r'^(?P<pk>\d+)/edit/$', EditTodo.as_view(), name='edit_todo'),
-    url(r'^(?P<todo_id>\d+)', DetailTodo.as_view(), name='show_todo'),
+    url(r'^(?P<pk>\d+)', DetailTodo.as_view(), name='show_todo'),
     url(r'^add/$', AddTodo.as_view(), name='add_todo'),
     url(r'^$', ListTodo.as_view(), name='list_todo'),
 ]
