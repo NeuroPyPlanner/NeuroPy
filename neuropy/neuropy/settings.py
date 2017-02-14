@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'neuropy',
     'userprofile',
     'todo',
 ]
@@ -56,8 +57,7 @@ ROOT_URLCONF = 'neuropy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'neuropy/templates'),
-                 os.path.join(BASE_DIR, 'userprofile/templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

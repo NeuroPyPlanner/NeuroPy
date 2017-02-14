@@ -154,3 +154,47 @@ class FrontendTestCases(TestCase):
         self.assertTrue(return_value('id_active_period_end') == '22:00:00')
         self.assertTrue(len(parsed_html.find_all('option')) == 6)
         self.assertTrue(return_value('id_dose_time') == '08:00:00')
+
+    def test_that_edit_will_edit_the_model(self):
+        """Test that edit will edit the model."""
+        client, user = self.make_user_and_login()
+        html = client.get('/profile/edit/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        client.post('/profile/edit/', {
+            "csrfmiddlewaretoken": csrf,
+            "First Name": "Sam",
+            "Last Name": "Glad",
+            "Email": "samglad@gmail.com",
+            "active_period_start": "09:00:00",
+            "active_period_end": "23:00:00",
+            "peak_period": "early_bird",
+            "dose_time": "09:00:00"
+        })
+        html = client.get('/profile/').content
+        html = str(html)
+        self.assertTrue('Sam Glad' in html)
+        self.assertTrue('bobdole' in html)
+        self.assertTrue('samglad@gmail.com' in html)
+        self.assertTrue('Active Period Start: 9 a.m.' in html)
+        self.assertTrue('Active Period End: 11 p.m.' in html)
+        self.assertTrue('Peak Period: early_bird' in html)
+        self.assertTrue('Dose Time: 9 a.m.' in html)
+
+    def test_edit_will_redirect_to_profile(self):
+        """Test edit will redirect to profile."""
+        client, user = self.make_user_and_login()
+        html = client.get('/profile/edit/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        response = client.post('/profile/edit/', {
+            "csrfmiddlewaretoken": csrf,
+            "First Name": "Sam",
+            "Last Name": "Glad",
+            "Email": "samglad@gmail.com",
+            "active_period_start": "09:00:00",
+            "active_period_end": "23:00:00",
+            "peak_period": "early_bird",
+            "dose_time": "09:00:00"
+        })
+        self.assertRedirects(response, '/profile/')
