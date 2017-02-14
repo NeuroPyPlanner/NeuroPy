@@ -93,6 +93,7 @@ class ListTodo(LoginRequiredMixin, ListView):
     login_url = reverse_lazy('login')
     login_required = True
     template_name = "todo/list_todo.html"
+    model = Todo
 
     def get_context_data(self):
         """Return a dict of all todos, filtering out todos."""
