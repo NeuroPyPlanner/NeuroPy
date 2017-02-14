@@ -1,0 +1,11 @@
+{% extends 'neuropy/layout.html' %}
+{% block content %}
+<section>
+    <form method="POST">
+        {% bootstrap_form form %}
+        {% csrf_token %}
+        {% bootstrap_button "Submit" button_type="submit" button_class="btn-primary" %}
+    </form>
+</section>
+<a href="{% url 'edit-profile' %}"><button type="button">Edit Profile</button></a>
+{% endblock %}

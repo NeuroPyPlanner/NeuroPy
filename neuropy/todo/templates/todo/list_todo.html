@@ -1,13 +1,13 @@
 {% extends 'neuropy/layout.html' %}
 {% block content %}
-<h2>Welcome {{user.username}}!</h2>
+{# <h2>Welcome {{user.username}}!</h2>
 <ul>
     <li>Name: {{user.first_name|title}} {{user.last_name|title}}</li>
     <li>Email: <a href="mailto:{{user.email}}">{{user.email}}</a></li>
     <li>Active Period Start: {{ user.profile.active_period_start }}</li>
     <li>Active Period End: {{ user.profile.active_period_end }}</li>
     <li>Peak Period: {{ user.profile.peak_period }}</li>
-    <li>Dose Time: {{ user.profile.dose_time }}</li>
-</ul>
+    <li>Dose Time: {{ user.profile.dose_time }}</li> #}
+{# </ul> #}
 <a href="{% url 'edit-profile' %}"><button type="button">Edit Profile</button></a>
 {% endblock %}
