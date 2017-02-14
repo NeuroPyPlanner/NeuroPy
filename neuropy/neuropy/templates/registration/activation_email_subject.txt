@@ -1,1 +1,1 @@
-Account Activation
+NeuroPy: Account Activation

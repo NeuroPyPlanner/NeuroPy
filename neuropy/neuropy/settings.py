@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'neuropy',
     'userprofile',
     'todo',
+    'bootstrap3',
 ]
 
 MIDDLEWARE = [
