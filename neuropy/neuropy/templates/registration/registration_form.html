@@ -1,9 +1,44 @@
 {% extends 'neuropy/layout.html' %}
 {% block content %}
   <h1>Register</h1>
-  <form method="POST">
+  <form method="POST" class='form'>
     {% csrf_token %}
-    {{ form.as_p }}
+    <p>{{ form.username.label_tag }}
+    {{ form.username }} {{ form.username.help_text}}</p>
+    <p>{{ form.email.label_tag }}
+    {{ form.email }} </p>
+    <p>{{ form.password1.label_tag }}
+    {{ form.password1 }} </p>
+    <p>{{ form.password2.label_tag }}
+    {{ form.password2 }} {{ form.password2.help_text}}</p>
+
+    <h3> Terms of Service </h3>
+    <div class='terms'>
+    <strong>1. Use of service</strong>
+    <p>The developers authorized to edit NeuroPy (NeuroPy devs) may alter augment or remove Neuropy’s source code and/or functionality at any time and at their sole discretion. This service is intended for personal use under the supervision of a qualified psychological or psychiatric professional.   NeuroPy is intended for personal convenience only, and is not a substitute for qualified professional judgment. In cases where the user doubts the usefulness of NeuroPy’s scheduling advice, the user should exercise their own judgment or consult with a qualified professional.</p>
+
+<strong>2. Disclaimer of Warranties</strong>
+   <p> The user acknowledges that NeuroPy is provided on an as-is basis. Except for warranties which may not be disclaimed as a matter of law, the NeuroPy devs make no representation or warranties whatsoever. The user understands and acknowledges that their sole and exclusive remedy for any defect or dissatisfaction with NeuroPy is to cease the use of the application.
+    The user accepts all responsibility and liability resulting from any change to or redistribution of NeuroPy’s source code.</p>
+
+<strong>3. Disclaimer of Content</strong>
+    <p>NeuroPy incorporates data gathered from medical studies. These studies may be updated or superseded. The user understands and acknowledges that the NeuroPy devs cannot guarantee the accuracy of the data, and therefore cannot guarantee the accuracy of any recommendations based on the data. The user also understands and acknowledges that said medical studies are based on a general population which may not be accurate to any specific user.
+    NeuroPy integrates with the user’s Google calendar. The user understands and acknowledges that the NeuroPy devs are unable to control the content of any particular user’s calendar. The user further understands that the NeuroPy devs are unable to control or anticipate any changes that Google may make to their service. As a result, the NeuroPy devs disclaim all responsibility for any content derived from the user’s Google account.</p>
+
+<strong>4. Limitation of Liability</strong>
+<p>
+    The user expressly understands and agrees that the NeuroPy devs shall not be liable for any direct, indirect, incidental, special, consequential, exemplary or other damages resulting from the use or misuse of NeuroPy, even if the NeuroPy devs have been advised of the possibility of damages. The user further understands and agrees that the NeuroPy devs shall not be liable for the statements or conduct of any third party provided or received as a result of the use or misues of NeuroPy or link provided in connection with NeuroPy. The user hereby assumes full responsibility for insuring the appropriatenes of using and relying on the scheduling suggestions provided by NeuroPy.</p>
+
+
+<strong>5. Severability</strong>
+    <p>In the event that any portion of this agreement is declared unenforceable or invalid, the remainder will continue to be valid and enforceable.</p>
+<label for="id_tos">I accept the terms of service</label>
+{% if form.tos.errors %}
+    <p class="errors">{{ form.tos.errors.as_text }}</p>
+{% endif %}
+{{ form.tos }}
+</p>
+    </div>
     <button type="submit" class="btn btn-primary">Register</button>
   </form>
 {% endblock content %}

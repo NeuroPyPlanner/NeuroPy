@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, Group, Permission
 from userprofile.models import Profile
 import factory
 from django.core.urlresolvers import reverse_lazy
+
 from bs4 import BeautifulSoup
 
 
@@ -85,35 +86,139 @@ class FrontendTestCases(TestCase):
         self.client = Client()
         self.request = RequestFactory()
 
+    def make_user_and_login(self):
+        """Make user and login."""
+        add_user_group()
+        user_register = UserFactory.create()
+        user_register.is_active = True
+        user_register.username = "bobdole"
+        user_register.first_name = 'Bob'
+        user_register.last_name = 'Dole'
+        user_register.email = 'awesome@gmail.com'
+        user_register.set_password("rutabega")
+        user_register.save()
+        self.client.post("/login/", {
+            "username": user_register.username,
+            "password": "rutabega"
+
+        })
+        return self.client, user_register
+
     def test_home_route_templates(self):
         """Test the home route templates are correct."""
-        response = self.client.get("/")
+        response = self.client.get(reverse_lazy('home'))
         self.assertTemplateUsed(response, "neuropy/base.html")
         self.assertTemplateUsed(response, "neuropy/home.html")
 
-    # def test_login_redirect_code(self):
-    #     """Test built-in login route redirects properly."""
-    #     add_user_group()
-    #     user_register = UserFactory.create()
-    #     user_register.is_active = True
-    #     user_register.username = "username"
-    #     user_register.set_password("rutabega")
-    #     user_register.save()
-    #     response = self.client.post("/login/", {
-    #         "username": user_register.username,
-    #         "password": "rutabega"
+    def test_login_redirect_code(self):
+        """Test built-in login route redirects properly."""
+        add_user_group()
+        user_register = UserFactory.create()
+        user_register.username = "username"
+        user_register.set_password("rutabega")
+        user_register.save()
+        response = self.client.post(reverse_lazy("login"), {
+            "username": user_register.username,
+            "password": "rutabega"
+        })
+        self.assertTrue(response.status_code == 302)
+        self.assertTrue(response.url == '/')
 
-    #     })
-    #     self.assertRedirects(response, '/')
-
-    # def test_login_has_input_fields(self):
-    #     """Test login has input fields."""
-    #     response = self.client.get('/login/')
-    #     parsed_html = BeautifulSoup(response.content, "html5lib")
-    #     self.assertTrue(len(parsed_html.find_all('input')) == 4)
+    def test_login_has_input_fields(self):
+        """Test login has input fields."""
+        response = self.client.get(reverse_lazy('login'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertTrue(len(parsed_html.find_all('input')) == 3)
 
     def test_registeration_has_input_fields(self):
         """Test registeration has input fields."""
-        response = self.client.get('/accounts/register/')
+        response = self.client.get(reverse_lazy('registration_register'))
         parsed_html = BeautifulSoup(response.content, "html5lib")
-        self.assertTrue(len(parsed_html.find_all('input')) == 5)
+        self.assertTrue(len(parsed_html.find_all('input')) == 6)
+
+    def test_registration_has_tos(self):
+        """Test registration form has TOS."""
+        response = self.client.get(reverse_lazy('registration_register'))
+        parsed_html = BeautifulSoup(response.content, 'html5lib')
+        self.assertTrue(parsed_html.find('h3').text == ' Terms of Service ')
+
+    def test_registration_has_tos_tick_box(self):
+        """Test registration form has input for tos."""
+        response = self.client.get(reverse_lazy('registration_register'))
+        parsed_html = BeautifulSoup(response.content, 'html5lib')
+        tos = parsed_html.findAll('input', attrs={'name': 'tos'})
+        self.assertTrue(len(tos) == 1)
+
+    def test_profile_route_has_all_info(self):
+        """Test profile route has all info."""
+        client, user = self.make_user_and_login()
+        html = client.get('/profile/').content
+        html = str(html)
+        self.assertTrue('Bob Dole' in html)
+        self.assertTrue('bobdole' in html)
+        self.assertTrue('awesome@gmail.com' in html)
+        self.assertTrue('Active Period Start: 8 a.m.' in html)
+        self.assertTrue('Active Period End: 10 p.m.' in html)
+        self.assertTrue('Peak Period: Morning' in html)
+        self.assertTrue('Dose Time: 8 a.m.' in html)
+
+    def test_edit_route_shows_info(self):
+        """Test_edit_route_shows_info."""
+        client, user = self.make_user_and_login()
+        html = client.get('/profile/edit/').content
+        parsed_html = BeautifulSoup(html, "html5lib")
+
+        def return_value(id):
+            return parsed_html.find("input", {"id": id})['value']
+
+        self.assertTrue(return_value('id_First Name') == 'Bob')
+        self.assertTrue(return_value('id_Last Name') == 'Dole')
+        self.assertTrue(return_value('id_Email') == 'awesome@gmail.com')
+        self.assertTrue(return_value('id_active_period_start') == '08:00:00')
+        self.assertTrue(return_value('id_active_period_end') == '22:00:00')
+        self.assertTrue(len(parsed_html.find_all('option')) == 6)
+        self.assertTrue(return_value('id_dose_time') == '08:00:00')
+
+    def test_that_edit_will_edit_the_model(self):
+        """Test that edit will edit the model."""
+        client, user = self.make_user_and_login()
+        html = client.get('/profile/edit/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        client.post('/profile/edit/', {
+            "csrfmiddlewaretoken": csrf,
+            "First Name": "Sam",
+            "Last Name": "Glad",
+            "Email": "samglad@gmail.com",
+            "active_period_start": "09:00:00",
+            "active_period_end": "23:00:00",
+            "peak_period": "early_bird",
+            "dose_time": "09:00:00"
+        })
+        html = client.get('/profile/').content
+        html = str(html)
+        self.assertTrue('Sam Glad' in html)
+        self.assertTrue('bobdole' in html)
+        self.assertTrue('samglad@gmail.com' in html)
+        self.assertTrue('Active Period Start: 9 a.m.' in html)
+        self.assertTrue('Active Period End: 11 p.m.' in html)
+        self.assertTrue('Peak Period: early_bird' in html)
+        self.assertTrue('Dose Time: 9 a.m.' in html)
+
+    def test_edit_will_redirect_to_profile(self):
+        """Test edit will redirect to profile."""
+        client, user = self.make_user_and_login()
+        html = client.get('/profile/edit/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        response = client.post('/profile/edit/', {
+            "csrfmiddlewaretoken": csrf,
+            "First Name": "Sam",
+            "Last Name": "Glad",
+            "Email": "samglad@gmail.com",
+            "active_period_start": "09:00:00",
+            "active_period_end": "23:00:00",
+            "peak_period": "early_bird",
+            "dose_time": "09:00:00"
+        })
+        self.assertRedirects(response, '/profile/')
