@@ -1,13 +1,13 @@
 {% extends 'neuropy/layout.html' %}
 {% block content %}
-{# <h2>Welcome {{user.username}}!</h2>
-<ul>
-    <li>Name: {{user.first_name|title}} {{user.last_name|title}}</li>
-    <li>Email: <a href="mailto:{{user.email}}">{{user.email}}</a></li>
-    <li>Active Period Start: {{ user.profile.active_period_start }}</li>
-    <li>Active Period End: {{ user.profile.active_period_end }}</li>
-    <li>Peak Period: {{ user.profile.peak_period }}</li>
-    <li>Dose Time: {{ user.profile.dose_time }}</li> #}
-{# </ul> #}
+<section>
+    {% for todo in todos %}
+        <article>
+            <h2 class="todo_list_header">{{todo.title}}</h2>
+            <p class="todo_list_body">Date: {{todo.date}}</p>
+            <p class="todo_list_body">Priority: {{todo.priority}}</p>
+        </article>
+    {% endfor %}
+</section>
 <a href="{% url 'edit-profile' %}"><button type="button">Edit Profile</button></a>
 {% endblock %}

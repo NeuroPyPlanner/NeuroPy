@@ -2,8 +2,9 @@
 
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, ListView
+from django.views.generic import CreateView, UpdateView, ListView, TemplateView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.http import HttpResponseForbidden
 from todo.models import Todo
 
 
@@ -11,15 +12,15 @@ class AddTodo(PermissionRequiredMixin, CreateView):
     """Add todo."""
 
     login_url = reverse_lazy('login')
-    permission_required = "imager_images.add_todo"
+    permission_required = "todo.add_todo"
 
     model = Todo
-    template_name = "imager_images/add_todo.html"
+    template_name = "todo/add_todo.html"
 
     fields = [
         'title', 'description', 'date', 'duration', 'ease', 'priority', 'owner'
     ]
-    success_url = reverse_lazy('todo:list_todos')
+    success_url = reverse_lazy('todo:list_todo')
 
     def form_valid(self, form):
         """Form validation for adding a todo."""
@@ -30,13 +31,13 @@ class AddTodo(PermissionRequiredMixin, CreateView):
 class EditTodo(PermissionRequiredMixin, UpdateView):
     """Edit todo."""
 
-    permission_required = "imager_images.change_todo"
+    permission_required = "todo.change_todo"
 
     model = Todo
-    template_name = "imager_images/add_todo.html"
+    template_name = "todo/add_todo.html"
 
     fields = ['title', 'description', 'date', 'duration', 'ease', 'priority']
-    success_url = reverse_lazy('todo:list_todos')
+    success_url = reverse_lazy('todo:list_todo')
 
 
 class ListTodo(LoginRequiredMixin, ListView):
@@ -47,9 +48,25 @@ class ListTodo(LoginRequiredMixin, ListView):
     template_name = "todo/list_todo.html"
 
     def get_context_data(self):
+        """Return a dict of all todos, filtering out todos belonging to other users."""
         owned_todos = []
         todo_items = Todo.objects.all()
         for item in todo_items:
-            if todo.owner.user.username == self.request.user.username:
+            if Todo.owner.user.username == self.request.user.username:
                 owned_todos.append(item)
         return {'todos': owned_todos}
+
+
+class DetailTodo(LoginRequiredMixin, TemplateView):
+    """Allow user to view details on a specific todo list item."""
+
+    login_url = reverse_lazy('login')
+
+    template_name = "todo/detail_todo.html"
+
+    def get_context_data(self):
+        """Return a specific todo list itme attached to the logged in user."""
+        todo_item = Todo.objects.get(id=self.kwargs['todo_id'])
+        if todo_item.owner.user.username == self.request.user.username:
+            return {'todo': todo_item}
+        return HttpResponseForbidden('Unauthorized')
