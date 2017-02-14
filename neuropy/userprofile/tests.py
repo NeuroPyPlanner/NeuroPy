@@ -134,7 +134,6 @@ class FrontendTestCases(TestCase):
         """Test registeration has input fields."""
         response = self.client.get(reverse_lazy('registration_register'))
         parsed_html = BeautifulSoup(response.content, "html5lib")
-<<<<<<< HEAD
         self.assertTrue(len(parsed_html.find_all('input')) == 6)
 
     def test_registration_has_tos(self):
@@ -149,8 +148,6 @@ class FrontendTestCases(TestCase):
         parsed_html = BeautifulSoup(response.content, 'html5lib')
         tos = parsed_html.findAll('input', attrs={'name': 'tos'})
         self.assertTrue(len(tos) == 1)
-=======
-        self.assertTrue(len(parsed_html.find_all('input')) == 5)
 
     def test_profile_route_has_all_info(self):
         """Test profile route has all info."""
@@ -225,4 +222,3 @@ class FrontendTestCases(TestCase):
             "dose_time": "09:00:00"
         })
         self.assertRedirects(response, '/profile/')
->>>>>>> development
