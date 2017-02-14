@@ -24,12 +24,13 @@ var/
 .installed.cfg
 *.egg
 neuroEnv/
+.DS_Store
 bin/
-man/
 pip-selfcheck.json
 pyvenv.cfg
 share/
-.DS_Store
+man/
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
