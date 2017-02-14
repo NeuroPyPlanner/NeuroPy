@@ -6,6 +6,7 @@ from django.views.generic import CreateView, UpdateView, ListView, TemplateView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from todo.models import Todo
+from django import forms
 from userprofile.models import Profile
 
 
@@ -18,9 +19,16 @@ class AddTodo(LoginRequiredMixin, CreateView):
     model = Todo
     template_name = "todo/add_todo.html"
 
-    fields = [
-        'title', 'description', 'date', 'duration', 'ease', 'priority'
-    ]
+    class AddForm(forms.Form):
+        """Tweak the add todo form to include a SelectDateWidget."""
+
+        title = forms.CharField()
+        description = forms.TextField()
+        date = forms.DateField(widget=forms.SelectDateWidget())
+        duration = forms.PositiveIntegerField()
+        ease = forms.PositiveIntegerField()
+        priority = forms.PositiveIntegerField()
+
     success_url = reverse_lazy('todo:list_todo')
 
     def form_valid(self, form):
@@ -40,7 +48,16 @@ class EditTodo(LoginRequiredMixin, UpdateView):
     model = Todo
     template_name = "todo/add_todo.html"
 
-    fields = ['title', 'description', 'date', 'duration', 'ease', 'priority']
+    class EditForm(forms.Form):
+        """Tweak the edit todo form to include a SelectDateWidget."""
+
+        title = forms.CharField()
+        description = forms.TextField()
+        date = forms.DateField(widget=forms.SelectDateWidget())
+        duration = forms.PositiveIntegerField()
+        ease = forms.PositiveIntegerField()
+        priority = forms.PositiveIntegerField()
+
     success_url = reverse_lazy('todo:list_todo')
 
 
