@@ -6,7 +6,7 @@ from django.views.generic import CreateView, UpdateView, ListView, TemplateView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from todo.models import Todo
-from django import forms
+from todo.forms import TodoForm
 from userprofile.models import Profile
 
 
@@ -19,28 +19,7 @@ class AddTodo(LoginRequiredMixin, CreateView):
     model = Todo
     template_name = "todo/add_todo.html"
 
-    class AddForm(forms.Form):
-        """Tweak the add todo form to include a SelectDateWidget."""
-
-        PRIORITY_CHOICES = (
-            (1, 'Now'),
-            (2, 'Urgent'),
-            (3, 'Semi Urgent'),
-            (4, 'Non Urgent'),
-        )
-
-        EASE_CHOICES = (
-            (1, 'Easy'),
-            (2, 'Medium'),
-            (3, 'Difficult'),
-        )
-
-        title = forms.CharField()
-        description = forms.CharField(widget=forms.Textarea)
-        date = forms.DateField(widget=forms.SelectDateWidget())
-        duration = forms.IntegerField(min_value=1)
-        ease = forms.ChoiceField(choices=EASE_CHOICES)
-        priority = forms.ChoiceField(choices=PRIORITY_CHOICES)
+    form_class = TodoForm
 
     success_url = reverse_lazy('todo:list_todo')
 
@@ -61,28 +40,7 @@ class EditTodo(LoginRequiredMixin, UpdateView):
     model = Todo
     template_name = "todo/add_todo.html"
 
-    class EditForm(forms.Form):
-        """Tweak the edit todo form to include a SelectDateWidget."""
-
-        PRIORITY_CHOICES = (
-            (1, 'Now'),
-            (2, 'Urgent'),
-            (3, 'Semi Urgent'),
-            (4, 'Non Urgent'),
-        )
-
-        EASE_CHOICES = (
-            (1, 'Easy'),
-            (2, 'Medium'),
-            (3, 'Difficult'),
-        )
-
-        title = forms.CharField()
-        description = forms.CharField(widget=forms.Textarea)
-        date = forms.DateField(widget=forms.SelectDateWidget())
-        duration = forms.IntegerField(min_value=1)
-        ease = forms.ChoiceField(choices=EASE_CHOICES)
-        priority = forms.ChoiceField(choices=PRIORITY_CHOICES)
+    form_class = TodoForm
 
     success_url = reverse_lazy('todo:list_todo')
 
