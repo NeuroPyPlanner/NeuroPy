@@ -11,8 +11,8 @@ class Medication(models.Model):
     name = models.CharField(
         max_length=20,
         default='CONCERTA')
-    med_type = models.CharField(default='stimulant')
-    treating_dis = models.CharField(default='ADD/ADHD')
+    med_type = models.CharField(max_length=20, default='stimulant')
+    treating_dis = models.CharField(max_length=25, default='ADD/ADHD')
     half_life = models.TimeField()
     ramp_up = models.DurationField()
     peak_period = models.DurationField()
