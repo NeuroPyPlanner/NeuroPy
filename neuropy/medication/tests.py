@@ -25,7 +25,6 @@ class MedicationTestCase(TestCase):
             ramp_up=ramp_up,
             peak_period=peak_period
         )
-        import pdb; pdb.set_trace()
 
         objects.save()
         return objects.id
@@ -34,12 +33,19 @@ class MedicationTestCase(TestCase):
         """Test that a medication instance has a name."""
         #med_id = self.medication_instance()
         medication = Medication.objects.get(name="CONCERTA")
-        import pdb; pdb.set_trace()
         self.assertTrue(medication.name == "CONCERTA")
 
-    # def test_med_type(self):
-    #     """Test that medication instanc."""
-    #     #med_id = self.medication_instance()
-    #     medication = Medication.objects.get(med_type="stimulant")
-    #     import pdb; pdb.set_trace()
-    #     assert medication.med_type == "stimulant"
+    def test_med_type(self):
+        """Test medication instance type."""
+        #med_id = self.medication_instance()
+        medications = Medication.objects.filter(med_type="stimulant")
+        for medication in medications:
+            assert medication.med_type == "stimulant"
+
+    def test_delete_med(self):
+        """Test fetching medication after delete throws an exception."""
+        #med_id = self.medication_instance()
+        medication = Medication.objects.get(name="CONCERTA")
+        medication.delete()
+        with self.assertRaises(Medication.DoesNotExist):
+            Medication.objects.get(name="CONCERTA")
