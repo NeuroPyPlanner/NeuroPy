@@ -22,12 +22,25 @@ class AddTodo(LoginRequiredMixin, CreateView):
     class AddForm(forms.Form):
         """Tweak the add todo form to include a SelectDateWidget."""
 
+        PRIORITY_CHOICES = (
+            (1, 'Now'),
+            (2, 'Urgent'),
+            (3, 'Semi Urgent'),
+            (4, 'Non Urgent'),
+        )
+
+        EASE_CHOICES = (
+            (1, 'Easy'),
+            (2, 'Medium'),
+            (3, 'Difficult'),
+        )
+
         title = forms.CharField()
-        description = forms.TextField()
+        description = forms.CharField(widget=forms.Textarea)
         date = forms.DateField(widget=forms.SelectDateWidget())
-        duration = forms.PositiveIntegerField()
-        ease = forms.PositiveIntegerField()
-        priority = forms.PositiveIntegerField()
+        duration = forms.IntegerField(min_value=1)
+        ease = forms.ChoiceField(choices=EASE_CHOICES)
+        priority = forms.ChoiceField(choices=PRIORITY_CHOICES)
 
     success_url = reverse_lazy('todo:list_todo')
 
@@ -51,12 +64,25 @@ class EditTodo(LoginRequiredMixin, UpdateView):
     class EditForm(forms.Form):
         """Tweak the edit todo form to include a SelectDateWidget."""
 
+        PRIORITY_CHOICES = (
+            (1, 'Now'),
+            (2, 'Urgent'),
+            (3, 'Semi Urgent'),
+            (4, 'Non Urgent'),
+        )
+
+        EASE_CHOICES = (
+            (1, 'Easy'),
+            (2, 'Medium'),
+            (3, 'Difficult'),
+        )
+
         title = forms.CharField()
-        description = forms.TextField()
+        description = forms.CharField(widget=forms.Textarea)
         date = forms.DateField(widget=forms.SelectDateWidget())
-        duration = forms.PositiveIntegerField()
-        ease = forms.PositiveIntegerField()
-        priority = forms.PositiveIntegerField()
+        duration = forms.IntegerField(min_value=1)
+        ease = forms.ChoiceField(choices=EASE_CHOICES)
+        priority = forms.ChoiceField(choices=PRIORITY_CHOICES)
 
     success_url = reverse_lazy('todo:list_todo')
 
