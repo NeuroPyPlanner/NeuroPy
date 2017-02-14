@@ -46,7 +46,7 @@ def add_user_group():
     new_group.save()
 
 
-class UserTestCase(TestCase):
+class TodoTestCase(TestCase):
     """The User Model test class."""
 
     def setUp(self):
@@ -90,3 +90,13 @@ class UserTestCase(TestCase):
         """Test str method on todo returns the title."""
         todo = Todo.objects.first()
         self.assertTrue(str(todo) == todo.title)
+
+
+class TodoFrontEndTestCase(TestCase):
+    """The User Model test class."""
+
+    def setUp(self):
+        """The setup and buildout for users, todos."""
+        add_user_group()
+        self.users = [UserFactory.create() for i in range(20)]
+        self.todos = [TodoFactory.create() for i in range(20)]
