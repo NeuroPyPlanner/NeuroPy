@@ -9,4 +9,5 @@
     <li>Peak Period: {{ user.profile.peak_period }}</li>
     <li>Dose Time: {{ user.profile.dose_time }}</li>
 </ul>
+<a href="{% url 'edit-profile' %}"><button type="button">Edit Profile</button></a>
 {% endblock %}
