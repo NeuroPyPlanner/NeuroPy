@@ -1,0 +1,13 @@
+{% extends 'neuropy/layout.html' %}
+{% block content %}
+<section>
+    <article>
+        <h2 class="todo_detail_header">{{todo.title}}</h2>
+        <p class="todo_detail_body">Date: {{todo.date}}</p>
+        <p class="todo_detail_body">Priority: {{todo.priority}}</p>
+        <p class="todo_detail_body">Ease: {{todo.ease}}</p>
+        <p class="todo_detail_body">Duration: {{todo.duration}}</p>
+        <p class="todo_detail_body">Description: {{todo.description}}</p>
+    </article>
+</section>
+{% endblock %}
