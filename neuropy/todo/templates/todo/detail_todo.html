@@ -1,13 +1,22 @@
 {% extends 'neuropy/layout.html' %}
 {% block content %}
+
+<div class="row">
+        <div class='page-header'>
+            <div class='btn-toolbar pull-right'>
+                <div class='btn-group'>
+                <a href="{% url 'edit_todo' todo.id %}" class="btn">Edit</a>
+                <a href="{% url 'add_todo' %}" class="btn">Add Todo</a>
+                </div>
+        </div>
+        <h2>{{todo.title}}</h2>
+        </div>
+</div>
 <section>
-    <article>
-        <h2 class="todo_detail_header">{{todo.title}}</h2>
-        <p class="todo_detail_body">Date: {{todo.date}}</p>
-        <p class="todo_detail_body">Priority: {{todo.priority}}</p>
-        <p class="todo_detail_body">Ease: {{todo.ease}}</p>
-        <p class="todo_detail_body">Duration: {{todo.duration}}</p>
-        <p class="todo_detail_body">Description: {{todo.description}}</p>
-    </article>
+        <p><strong>Date: </strong>{{todo.date}}</p>
+        <p><strong>Priority: </strong>{{todo.priority}}</p>
+        <p><strong>Ease: </strong>{{todo.ease}}</p>
+        <p><strong>Duration: </strong>{{todo.duration}}</p>
+        <p><strong>Description: </strong>{{todo.description}}</p>
 </section>
 {% endblock %}
