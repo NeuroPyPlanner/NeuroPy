@@ -37,7 +37,7 @@ class Profile(models.Model):
 def build_profile(sender, instance, **kwargs):
     """Attaches a profile to a user whenever a user is made."""
     if kwargs["created"]:
-        group = Group.objects.get(name='user')
-        instance.groups.add(group)
+        # group = Group.objects.get(name='user')
+        # instance.groups.add(group)
         new_profile = Profile(user=instance)
         new_profile.save()
