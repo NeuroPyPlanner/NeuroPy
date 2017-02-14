@@ -1,31 +1,34 @@
 """Views allowing the user to interact with their own todo items."""
 
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, ListView, TemplateView
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from todo.models import Todo
+from userprofile.models import Profile
 
 
-class AddTodo(PermissionRequiredMixin, CreateView):
+class AddTodo(LoginRequiredMixin, CreateView):
     """Add todo."""
 
     login_url = reverse_lazy('login')
-    permission_required = "todo.add_todo"
+    login_required = True
 
     model = Todo
     template_name = "todo/add_todo.html"
 
     fields = [
-        'title', 'description', 'date', 'duration', 'ease', 'priority', 'owner'
+        'title', 'description', 'date', 'duration', 'ease', 'priority'
     ]
     success_url = reverse_lazy('todo:list_todo')
 
     def form_valid(self, form):
-        """Form validation for adding a todo."""
-        form.instance.user = self.request.user
-        return super(AddTodo, self).form_valid(form)
+        """Form should update the photographer to the user."""
+        self.object = form.save(commit=False)
+        self.object.owner = Profile.objects.get(user=self.request.user)
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class EditTodo(PermissionRequiredMixin, UpdateView):
