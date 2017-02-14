@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, Group, Permission
 from userprofile.models import Profile
 import factory
 from django.core.urlresolvers import reverse_lazy
+
 from bs4 import BeautifulSoup
 
 
@@ -105,7 +106,7 @@ class FrontendTestCases(TestCase):
 
     def test_home_route_templates(self):
         """Test the home route templates are correct."""
-        response = self.client.get("/")
+        response = self.client.get(reverse_lazy('home'))
         self.assertTemplateUsed(response, "neuropy/base.html")
         self.assertTemplateUsed(response, "neuropy/home.html")
 
@@ -113,27 +114,42 @@ class FrontendTestCases(TestCase):
         """Test built-in login route redirects properly."""
         add_user_group()
         user_register = UserFactory.create()
-        user_register.is_active = True
         user_register.username = "username"
         user_register.set_password("rutabega")
         user_register.save()
-        response = self.client.post("/login/", {
+        response = self.client.post(reverse_lazy("login"), {
             "username": user_register.username,
             "password": "rutabega"
-
         })
-        self.assertRedirects(response, '/')
+        self.assertTrue(response.status_code == 302)
+        self.assertTrue(response.url == '/')
 
     def test_login_has_input_fields(self):
         """Test login has input fields."""
-        response = self.client.get('/login/')
+        response = self.client.get(reverse_lazy('login'))
         parsed_html = BeautifulSoup(response.content, "html5lib")
-        self.assertTrue(len(parsed_html.find_all('input')) == 4)
+        self.assertTrue(len(parsed_html.find_all('input')) == 3)
 
     def test_registeration_has_input_fields(self):
         """Test registeration has input fields."""
-        response = self.client.get('/accounts/register/')
+        response = self.client.get(reverse_lazy('registration_register'))
         parsed_html = BeautifulSoup(response.content, "html5lib")
+<<<<<<< HEAD
+        self.assertTrue(len(parsed_html.find_all('input')) == 6)
+
+    def test_registration_has_tos(self):
+        """Test registration form has TOS."""
+        response = self.client.get(reverse_lazy('registration_register'))
+        parsed_html = BeautifulSoup(response.content, 'html5lib')
+        self.assertTrue(parsed_html.find('h3').text == ' Terms of Service ')
+
+    def test_registration_has_tos_tick_box(self):
+        """Test registration form has input for tos."""
+        response = self.client.get(reverse_lazy('registration_register'))
+        parsed_html = BeautifulSoup(response.content, 'html5lib')
+        tos = parsed_html.findAll('input', attrs={'name': 'tos'})
+        self.assertTrue(len(tos) == 1)
+=======
         self.assertTrue(len(parsed_html.find_all('input')) == 5)
 
     def test_profile_route_has_all_info(self):
@@ -209,3 +225,4 @@ class FrontendTestCases(TestCase):
             "dose_time": "09:00:00"
         })
         self.assertRedirects(response, '/profile/')
+>>>>>>> development
