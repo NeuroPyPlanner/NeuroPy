@@ -65,6 +65,17 @@ class ProfileTestCase(TestCase):
         group = user.groups.first()
         self.assertTrue(group.name == 'user')
 
+    def test_profile_has_attributes(self):
+        """Test that the profile has attributes and assigns defaults."""
+        # import pdb; pdb.set_trace()
+        users = self.users
+        attributes = [
+            'active_period_start', 'active_period_end', 'peak_period', 'dose_time'
+        ]
+        for user in users:
+            for attribute in attributes:
+                self.assertTrue(hasattr(user.profile, attribute))
+
 
 class FrontendTestCases(TestCase):
     """Test the frontend of the imager_profile site."""
@@ -80,26 +91,26 @@ class FrontendTestCases(TestCase):
         self.assertTemplateUsed(response, "neuropy/base.html")
         self.assertTemplateUsed(response, "neuropy/home.html")
 
-    def test_login_redirect_code(self):
-        """Test built-in login route redirects properly."""
-        add_user_group()
-        user_register = UserFactory.create()
-        user_register.is_active = True
-        user_register.username = "username"
-        user_register.set_password("rutabega")
-        user_register.save()
-        response = self.client.post("/login/", {
-            "username": user_register.username,
-            "password": "rutabega"
+    # def test_login_redirect_code(self):
+    #     """Test built-in login route redirects properly."""
+    #     add_user_group()
+    #     user_register = UserFactory.create()
+    #     user_register.is_active = True
+    #     user_register.username = "username"
+    #     user_register.set_password("rutabega")
+    #     user_register.save()
+    #     response = self.client.post("/login/", {
+    #         "username": user_register.username,
+    #         "password": "rutabega"
 
-        })
-        self.assertRedirects(response, '/')
+    #     })
+    #     self.assertRedirects(response, '/')
 
-    def test_login_has_input_fields(self):
-        """Test login has input fields."""
-        response = self.client.get('/login/')
-        parsed_html = BeautifulSoup(response.content, "html5lib")
-        self.assertTrue(len(parsed_html.find_all('input')) == 4)
+    # def test_login_has_input_fields(self):
+    #     """Test login has input fields."""
+    #     response = self.client.get('/login/')
+    #     parsed_html = BeautifulSoup(response.content, "html5lib")
+    #     self.assertTrue(len(parsed_html.find_all('input')) == 4)
 
     def test_registeration_has_input_fields(self):
         """Test registeration has input fields."""

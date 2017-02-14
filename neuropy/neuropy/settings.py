@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'medication',
+    'neuropy',
     'userprofile',
     'todo',
+    'bootstrap3',
 ]
 
 MIDDLEWARE = [

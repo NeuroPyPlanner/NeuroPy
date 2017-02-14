@@ -13,7 +13,7 @@ class Medication(models.Model):
         default='CONCERTA')
     med_type = models.CharField(max_length=20, default='stimulant')
     treating_dis = models.CharField(max_length=25, default='ADD/ADHD')
-    half_life = models.TimeField()
+    half_life = models.DurationField()
     ramp_up = models.DurationField()
     peak_period = models.DurationField()
     # Ease_priority_matrix=models.CharField
