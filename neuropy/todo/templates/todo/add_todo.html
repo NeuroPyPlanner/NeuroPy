@@ -2,9 +2,9 @@
 {% block content %}
 <section>
     <form method="POST">
-        {% bootstrap_form form %}
         {% csrf_token %}
-        {% bootstrap_button "Submit" button_type="submit" button_class="btn-primary" %}
+         {{ form.as_p }}
+    <input type="submit" value="Create" class="btn btn-primary"/>
     </form>
 </section>
-{% endblock %}
+{% endblock content%}
