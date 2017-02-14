@@ -1,8 +1,9 @@
-{% extends 'neuropy/base.html' %}
+{% extends 'neuropy/layout.html' %}
 {% block content %}
-<form method="POST">
+  <h1>Register</h1>
+  <form method="POST">
     {% csrf_token %}
-    {{ form.as_table }}
-    <button type="submit" name="submit">Register</button>
-</form>
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>
 {% endblock content %}
