@@ -1,14 +1,18 @@
 """Views for profile."""
-from django.views.generic import detail, UpdateView
-from userprofile.models import Profile
-from django.urls import reverse_lazy
-from userprofile.forms import ProfileForm
+
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, UpdateView
+
+from userprofile.forms import ProfileForm
+from userprofile.models import Profile
 
 
-class ProfileView(detail.DetailView):
-    """View for profle."""
+class ProfileView(LoginRequiredMixin, DetailView):
+    """View for profile."""
 
+    login_required = True
     model = Profile
     template_name = 'userprofile/profile.html'
     slug_field = 'id'
@@ -18,9 +22,10 @@ class ProfileView(detail.DetailView):
         return self.request.user
 
 
-class EditProfile(UpdateView):
-    """Add Album."""
+class EditProfile(LoginRequiredMixin, UpdateView):
+    """Edit users profile."""
 
+    login_required = True
     template_name = 'userprofile/edit_profile.html'
     model = Profile
     form_class = ProfileForm

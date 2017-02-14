@@ -1,7 +1,20 @@
 {% extends 'neuropy/layout.html' %}
 {% block content %}
-<form action="" method="post">{% csrf_token %}
+
+<div class="row">
+        <div class='page-header'>
+            <div class='btn-toolbar pull-right'>
+                <div class='btn-group'>
+                    <a href="{% url 'profile' %}" class="btn">Profile</a>
+                </div>
+            </div>
+            <h1>Edit your profile</h1>
+        </div>
+</div>
+<div>
+<form method="post">{% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Update" />
+    <input class="btn btn-primary" type="submit" value="Update" />
 </form>
+</div>
 {% endblock %}
