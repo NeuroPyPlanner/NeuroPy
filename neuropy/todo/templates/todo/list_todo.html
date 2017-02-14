@@ -13,7 +13,7 @@
 <section>
     {% for todo in todos %}
         <article>
-            <h2 class="todo_list_header">{{todo.title}}</h2>
+            <a href="{% url 'show_todo' todo.id %}"><h2 class="todo_list_header">{{todo.title}}</h2></a>
             <p class="todo_list_body">Date: {{todo.date}}</p>
             <p class="todo_list_body">Priority: {{todo.priority}}</p>
             <a href="{% url 'edit_todo' todo.id %}" class="btn">Edit</a>
