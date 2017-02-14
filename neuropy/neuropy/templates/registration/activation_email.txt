@@ -1,2 +1,7 @@
-Click here to register at imagersite:
-http://{{ site.domain }}{% url "registration_activate" activation_key %}
+Thanks for joining NeuroPy!
+
+To activate your account, please visit the following page:
+
+http://{{ site }}{% url 'registration_activate' activation_key %}
+
+This page will expire in {{ expiration_days }} days.

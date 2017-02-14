@@ -1,4 +1,10 @@
-{% extends 'neuropy/base.html' %}
+{% extends 'neuropy/layout.html' %}
 {% block content %}
-<h1>Activation complete, welcome to neuropy</h1>
+  <h1>Congratulations!</h1>
+  <p>You have successfully completed registration to IMAGE-Nation</p>
+  <p>To get started, why not edit your profile, so we can get to know you.</p>
+
+  <a href="{% url 'edit-profile' %}" class="btn btn-primary">Edit Profile</a>
+
+  <a href="/" class="btn btn-primary">Home</a>
 {% endblock content %}
