@@ -2,12 +2,15 @@
 
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, ListView, TemplateView
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.http import HttpResponseForbidden
+from django.views.generic import CreateView, UpdateView, ListView, DetailView
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        # PermissionRequiredMixin,
+                                        UserPassesTestMixin,
+                                        )
 from todo.models import Todo
 from django import forms
 from userprofile.models import Profile
+from django.shortcuts import get_object_or_404
 
 
 class AddTodo(LoginRequiredMixin, CreateView):
@@ -102,17 +105,15 @@ class ListTodo(LoginRequiredMixin, ListView):
         return {'todos': owned_todos}
 
 
-class DetailTodo(LoginRequiredMixin, TemplateView):
+class DetailTodo(UserPassesTestMixin, DetailView):
     """Allow user to view details on a specific todo list item."""
 
     login_url = reverse_lazy('login')
     login_required = True
-
+    model = Todo
     template_name = "todo/detail_todo.html"
 
-    def get_context_data(self):
-        """Return a specific todo list itme attached to the logged in user."""
-        todo_item = Todo.objects.get(id=self.kwargs['todo_id'])
-        if todo_item.owner.user.username == self.request.user.username:
-            return {'todo': todo_item}
-        return HttpResponseForbidden('Unauthorized')
+    def test_func(self):
+        """Override the userpassestest test_func."""
+        todo = get_object_or_404(Todo, id=self.kwargs['pk'])
+        return todo.owner.user == self.request.user
