@@ -1,13 +1,22 @@
 {% extends 'neuropy/layout.html' %}
 {% block content %}
-<h2>Welcome {{user.username}}!</h2>
-<ul>
-    <li>Name: {{user.first_name|title}} {{user.last_name|title}}</li>
-    <li>Email: <a href="mailto:{{user.email}}">{{user.email}}</a></li>
-    <li>Active Period Start: {{ user.profile.active_period_start }}</li>
-    <li>Active Period End: {{ user.profile.active_period_end }}</li>
-    <li>Peak Period: {{ user.profile.peak_period }}</li>
-    <li>Dose Time: {{ user.profile.dose_time }}</li>
+
+<div class="row">
+        <div class='page-header'>
+            <div class='btn-toolbar pull-right'>
+                <div class='btn-group'>
+                    <a href="{% url 'edit-profile' %}" class="btn">Edit Profile</a>
+                </div>
+        </div>
+        <h1>Welcome {{user.username}}!</h1>
+        </div>
+</div>
+<ul class="unstyled">
+    <li><strong>Name: </strong>{{user.first_name|title}} {{user.last_name|title}}</li>
+    <li><strong>Email: </strong><a href="mailto:{{user.email}}">{{user.email}}</a></li>
+    <li><strong>Active Period Start: </strong>{{ user.profile.active_period_start }}</li>
+    <li><strong>Active Period End: </strong>{{ user.profile.active_period_end }}</li>
+    <li><strong>Peak Period: </strong>{{ user.profile.peak_period }}</li>
+    <li><strong>Dose Time: </strong>{{ user.profile.dose_time }}</li>
 </ul>
-<a href="{% url 'edit-profile' %}"><button type="button">Edit Profile</button></a>
 {% endblock %}
