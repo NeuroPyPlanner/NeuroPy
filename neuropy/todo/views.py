@@ -43,7 +43,7 @@ class EditTodo(LoginRequiredMixin, UpdateView):
     login_required = True
 
     model = Todo
-    template_name = "todo/add_todo.html"
+    template_name = "todo/edit_todo.html"
 
     form_class = TodoForm
 
