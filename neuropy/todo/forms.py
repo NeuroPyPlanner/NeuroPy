@@ -34,4 +34,4 @@ class TodoForm(forms.ModelForm):
         """Model for form and fields to exclude."""
 
         model = Todo
-        exclude = ['owner']
+        exclude = ['owner', 'start_time', 'end_time']

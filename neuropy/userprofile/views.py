@@ -8,6 +8,7 @@ from userprofile.forms import ProfileForm, MedicationForm
 from userprofile.models import Profile
 
 
+
 class ProfileView(LoginRequiredMixin, DetailView):
     """View for profile."""
 
@@ -39,6 +40,7 @@ class ProfileFormView(LoginRequiredMixin, FormView):
 
     def todo_buckets(self):
         """Take all the user's todo items and sorts them by ease/priority."""
+
 
     def test_overlap(self):
         """Test if calendar event generated from todo overlaps other events."""
