@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from todo.models import Todo
 from userprofile.models import Profile
 import factory
+from bs4 import BeautifulSoup
 
 
 class TodoFactory(factory.django.DjangoModelFactory):
@@ -159,3 +160,14 @@ class TodoFrontEndTestCase(TestCase):
             'edit_todo', kwargs={'pk': todo.id})
         )
         self.assertTrue('Edit a To-Do item' in response.content.decode())
+
+    def test_todo_list_route_displays_correctly(self):
+        """Test todo list route displays correctly."""
+        self.client.force_login(self.users[0])
+        user = self.users[0]
+        todo = self.todos[3]
+        todo.owner = user.profile
+        todo.save()
+        response = self.client.get(reverse_lazy("list_todo"))
+        parsed_html = BeautifulSoup(response.content, 'html5lib')
+        self.assertTrue(len(parsed_html.find_all('article')) == 1)

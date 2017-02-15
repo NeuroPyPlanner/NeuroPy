@@ -2,7 +2,7 @@
 
 from django.test import TestCase, Client, RequestFactory
 from django.contrib.auth.models import User, Group, Permission
-from userprofile.models import Profile
+from userprofile.models import Profile, CredentialsModel
 import factory
 from django.core.urlresolvers import reverse_lazy
 
@@ -77,14 +77,24 @@ class ProfileTestCase(TestCase):
             for attribute in attributes:
                 self.assertTrue(hasattr(user.profile, attribute))
 
+    def test_credentials_model_has_user_id_attribute(self):
+        """Test Credentials Model has user_id attribute."""
+        self.assertTrue(hasattr(CredentialsModel, 'user_id'))
+
+    def test_credentials_model_has_credential_attribute(self):
+        """Test Credentials Model has credential attribute."""
+        self.assertTrue(hasattr(CredentialsModel, 'credential'))
+
 
 class FrontendTestCases(TestCase):
     """Test the frontend of the imager_profile site."""
 
     def setUp(self):
         """Set up client and request factory."""
+        add_user_group()
         self.client = Client()
         self.request = RequestFactory()
+        self.users = [UserFactory.create() for i in range(20)]
 
     def make_user_and_login(self):
         """Make user and login."""
@@ -220,3 +230,19 @@ class FrontendTestCases(TestCase):
             "dose_time": "09:00:00"
         })
         self.assertRedirects(response, '/profile/')
+
+    def test_profile_templates(self):
+        """Test the profile templates are correct."""
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy('profile'))
+        self.assertTemplateUsed(response, "neuropy/base.html")
+        self.assertTemplateUsed(response, "neuropy/layout.html")
+        self.assertTemplateUsed(response, "userprofile/profile.html")
+
+    def test_edit_profile_templates(self):
+        """Test the edit profile templates are correct."""
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy('edit-profile'))
+        self.assertTemplateUsed(response, "neuropy/base.html")
+        self.assertTemplateUsed(response, "neuropy/layout.html")
+        self.assertTemplateUsed(response, "userprofile/edit_profile.html")
