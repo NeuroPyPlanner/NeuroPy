@@ -1,10 +1,13 @@
 """Test for todo app."""
 
-from django.test import TestCase
-from todo.models import Todo
 from django.contrib.auth.models import User, Group
+from django.test import TestCase, Client, RequestFactory
+from django.urls import reverse_lazy
+
+from todo.models import Todo
 from userprofile.models import Profile
 import factory
+from bs4 import BeautifulSoup
 
 
 class TodoFactory(factory.django.DjangoModelFactory):
@@ -46,8 +49,8 @@ def add_user_group():
     new_group.save()
 
 
-class UserTestCase(TestCase):
-    """The User Model test class."""
+class TodoTestCase(TestCase):
+    """The Todo Model test class."""
 
     def setUp(self):
         """The setup and buildout for users, todos."""
@@ -60,6 +63,10 @@ class UserTestCase(TestCase):
         this_todo = self.todos[0]
         this_todo.save()
         self.assertTrue(self.todos[0])
+
+    def test_unique_todo_created(self):
+        """Test that the number of todos in the database equla the nuber of todos created."""
+        self.assertTrue(Todo.objects.count() == 20)
 
     def test_todo_has_attributes(self):
         """Test todo is created with attributes."""
@@ -90,3 +97,77 @@ class UserTestCase(TestCase):
         """Test str method on todo returns the title."""
         todo = Todo.objects.first()
         self.assertTrue(str(todo) == todo.title)
+
+    def test_assign_multiple_todos_to_single_user(self):
+        """Test the many-to-one relationship between todo and user works."""
+        todo1 = self.todos[4]
+        todo2 = self.todos[5]
+        owner = self.users[6].profile
+        todo1.owner, todo2.owner = owner, owner
+        todo1.save()
+        todo2.save()
+        self.assertTrue(owner.todo.count() == 2)
+
+
+class TodoFrontEndTestCase(TestCase):
+    """The Todo route and view test class."""
+
+    def setUp(self):
+        """The setup and buildout for users, todos."""
+        self.client = Client()
+        self.request = RequestFactory()
+        add_user_group()
+        self.users = [UserFactory.create() for i in range(20)]
+        self.todos = [TodoFactory.create() for i in range(20)]
+
+    def test_todo_list_route_is_status_ok(self):
+        """Funcional test for todo list."""
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy("list_todo"))
+        self.assertTrue(response.status_code == 200)
+
+    def test_todo_list_route_uses_right_templates(self):
+        """Test todo list returns the right templates."""
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy("list_todo"))
+        self.assertTemplateUsed(response, "neuropy/layout.html")
+        self.assertTemplateUsed(response, "todo/list_todo.html")
+
+    def test_todo_detail_route_is_status_ok(self):
+        """Funcional test for todo list."""
+        self.client.force_login(self.users[0])
+        todo = self.todos[0]
+        todo.owner = self.users[0].profile
+        todo.save()
+        response = self.client.get('/profile/todo/' + str(todo.pk))
+        self.assertTrue(response.status_code == 200)
+
+    def test_todo_detail_route_uses_right_templates(self):
+        """Test todo list returns the right templates."""
+        self.client.force_login(self.users[0])
+        todo = self.todos[0]
+        todo.owner = self.users[0].profile
+        todo.save()
+        response = self.client.get('/profile/todo/' + str(todo.pk))
+        self.assertTemplateUsed(response, "neuropy/layout.html")
+        self.assertTemplateUsed(response, "todo/detail_todo.html")
+
+    def test_edit_todo_default_values(self):
+        """Test that the response when calling the edit todo views includes default values."""
+        todo = self.todos[0]
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy(
+            'edit_todo', kwargs={'pk': todo.id})
+        )
+        self.assertTrue('Edit a To-Do item' in response.content.decode())
+
+    def test_todo_list_route_displays_correctly(self):
+        """Test todo list route displays correctly."""
+        self.client.force_login(self.users[0])
+        user = self.users[0]
+        todo = self.todos[3]
+        todo.owner = user.profile
+        todo.save()
+        response = self.client.get(reverse_lazy("list_todo"))
+        parsed_html = BeautifulSoup(response.content, 'html5lib')
+        self.assertTrue(len(parsed_html.find_all('article')) == 1)

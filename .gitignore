@@ -27,10 +27,11 @@ neuroEnv/
 .DS_Store
 bin/
 man/
-medication/
 pip-selfcheck.json
 pyvenv.cfg
 share/
+
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

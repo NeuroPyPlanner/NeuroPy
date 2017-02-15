@@ -4,6 +4,14 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import time
+from oauth2client.contrib.django_util.models import CredentialsField
+
+
+class CredentialsModel(models.Model):
+    """Google Credential Model."""
+
+    user_id = models.OneToOneField(User)
+    credential = CredentialsField()
 
 
 @python_2_unicode_compatible
@@ -31,6 +39,10 @@ class Profile(models.Model):
         default='Morning'
     )
     dose_time = models.TimeField(default=time(hour=8))
+
+    def __str__(self):
+        """String representation of Todo."""
+        return self.user.username
 
 
 @receiver(post_save, sender=User)

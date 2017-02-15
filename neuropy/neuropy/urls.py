@@ -1,4 +1,4 @@
-"""neuropy URL Configuration
+"""Neuropy URL Configuration.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -14,14 +14,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from django.contrib import admin, auth
+from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
+from registration.backends.hmac.views import RegistrationView
+from registration.forms import RegistrationFormTermsOfService
+import oauth2client.contrib.django_util.site as django_util_site
 
 
 urlpatterns = [
+    url(r'^oauth2/', include(django_util_site.urls)),
     url(r'^admin/', admin.site.urls),
-    url(r'^$', TemplateView.as_view(template_name="neuropy/home.html"), name='home'),
+    url(r'^$', TemplateView.as_view(template_name="neuropy/home.html"),
+        name='home'),
+    url(r'^accounts/register/$',
+        RegistrationView.as_view(form_class=RegistrationFormTermsOfService),
+        name='registration_register'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
-    url(r'^login/', auth.views.login, name='login'),
-    url(r'^logout/', auth.views.logout, {'next_page': '/'}, name='logout'),
+    url(r'^login/', auth_views.login, name='login'),
+    url(r'^logout/', auth_views.logout, {'next_page': '/'}, name='logout'),
+    url(r'^profile/', include('userprofile.urls')),
+    url(r'^profile/todo/', include('todo.urls'))
 ]

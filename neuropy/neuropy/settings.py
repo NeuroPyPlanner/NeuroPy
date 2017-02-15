@@ -37,10 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'medication',
     'neuropy',
     'userprofile',
     'todo',
     'bootstrap3',
+    'oauth2client.contrib.django_util'
 ]
 
 MIDDLEWARE = [
@@ -58,7 +60,7 @@ ROOT_URLCONF = 'neuropy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'neuropy/templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -109,6 +111,18 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+GOOGLE_OAUTH2_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
+
+GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
+
+GOOGLE_OAUTH2_SCOPES = ('https://www.googleapis.com/auth/calendar',)
+
+GOOGLE_OAUTH2_STORAGE_MODEL = {
+    'model': 'userprofile.models.CredentialsModel',
+    'user_property': 'user_id',
+    'credentials_property': 'credential',
+}
 
 
 # Internationalization
