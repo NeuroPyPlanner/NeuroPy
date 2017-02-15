@@ -24,7 +24,7 @@ class AddTodo(LoginRequiredMixin, CreateView):
 
     form_class = TodoForm
 
-    success_url = reverse_lazy('todo:list_todo')
+    success_url = reverse_lazy('list_todo')
 
     def form_valid(self, form):
         """Form should update the photographer to the user."""
@@ -45,7 +45,7 @@ class EditTodo(LoginRequiredMixin, UpdateView):
 
     form_class = TodoForm
 
-    success_url = reverse_lazy('todo:list_todo')
+    success_url = reverse_lazy('list_todo')
 
 
 class ListTodo(LoginRequiredMixin, ListView):

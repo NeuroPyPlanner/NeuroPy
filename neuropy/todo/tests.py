@@ -49,7 +49,7 @@ def add_user_group():
 
 
 class TodoTestCase(TestCase):
-    """The User Model test class."""
+    """The Todo Model test class."""
 
     def setUp(self):
         """The setup and buildout for users, todos."""
@@ -62,6 +62,10 @@ class TodoTestCase(TestCase):
         this_todo = self.todos[0]
         this_todo.save()
         self.assertTrue(self.todos[0])
+
+    def test_unique_todo_created(self):
+        """Test that the number of todos in the database equla the nuber of todos created."""
+        self.assertTrue(Todo.objects.count() == 20)
 
     def test_todo_has_attributes(self):
         """Test todo is created with attributes."""
@@ -93,9 +97,19 @@ class TodoTestCase(TestCase):
         todo = Todo.objects.first()
         self.assertTrue(str(todo) == todo.title)
 
+    def test_assign_multiple_todos_to_single_user(self):
+        """Test the many-to-one relationship between todo and user works."""
+        todo1 = Todo.objects.all()[0]
+        todo2 = Todo.objects.all()[1]
+        owner = Profile.objects.first()
+        todo1.user, todo2.user = owner, owner
+        todo1.save()
+        todo2.save()
+        self.assertTrue(Profile.todo.count() == 2)
+
 
 class TodoFrontEndTestCase(TestCase):
-    """The User Model test class."""
+    """The Todo route and view test class."""
 
     def setUp(self):
         """The setup and buildout for users, todos."""
@@ -136,3 +150,11 @@ class TodoFrontEndTestCase(TestCase):
         response = self.client.get('/profile/todo/' + str(todo.pk))
         self.assertTemplateUsed(response, "neuropy/layout.html")
         self.assertTemplateUsed(response, "todo/detail_todo.html")
+
+    def test_edit_todo_default_values(self):
+        """Test that the response when calling the edit todo views includes default values."""
+        todo = self.todos[0]
+        response = self.client.get(reverse_lazy(
+            'todo:edit_todo', kwargs={'pk': todo.id})
+        )
+        self.assertTrue('Edit a To-Do item' in response.content.decode())
