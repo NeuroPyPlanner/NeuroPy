@@ -26,8 +26,6 @@ class ProfileForm(forms.ModelForm):
         exclude = []
 
 
-
-
 class MedicationForm(forms.Form):
     """Create a form allowing the user to base the schedule on a medication."""
 
@@ -38,8 +36,9 @@ class MedicationForm(forms.Form):
         ("Ritalin LA", "Ritalin LA"),
         ("Vyvanse", "Vyvanse")
     )
-    
-    medication = forms.ChoiceField(
+
+    medication = forms.ModelChoiceField(
         widget=forms.RadioSelect,
-        choices=MEDICATION_CHOICES,
+        queryset=Medication.objects.all(),
+        empty_label=None
     )

@@ -3,7 +3,7 @@
       "model":"medication.medication",
       "pk":1,
       "fields":{  
-         "name":"CONCERTA",
+         "name":"Concerta",
          "med_type":"stimulant",
          "treating_dis":"ADD/ADHD",
          "half_life":"03:30:00",
@@ -21,7 +21,7 @@
       "model":"medication.medication",
       "pk":2,
       "fields":{  
-         "name":"ADDERALL",
+         "name":"Adderall",
          "med_type":"stimulant",
          "treating_dis":"ADD/ADHD",
          "half_life":"10:00:00",
