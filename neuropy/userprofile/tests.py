@@ -2,7 +2,7 @@
 
 from django.test import TestCase, Client, RequestFactory
 from django.contrib.auth.models import User, Group, Permission
-from userprofile.models import Profile
+from userprofile.models import Profile, CredentialsModel
 import factory
 from django.core.urlresolvers import reverse_lazy
 
@@ -76,6 +76,14 @@ class ProfileTestCase(TestCase):
         for user in users:
             for attribute in attributes:
                 self.assertTrue(hasattr(user.profile, attribute))
+
+    def test_credentials_model_has_user_id_attribute(self):
+        """Test Credentials Model has user_id attribute."""
+        self.assertTrue(hasattr(CredentialsModel, 'user_id'))
+
+    def test_credentials_model_has_credential_attribute(self):
+        """Test Credentials Model has credential attribute."""
+        self.assertTrue(hasattr(CredentialsModel, 'credential'))
 
 
 class FrontendTestCases(TestCase):
