@@ -40,6 +40,10 @@ class Profile(models.Model):
     )
     dose_time = models.TimeField(default=time(hour=8))
 
+    def __str__(self):
+        """String representation of Todo."""
+        return self.user.username
+
 
 @receiver(post_save, sender=User)
 def build_profile(sender, instance, **kwargs):
