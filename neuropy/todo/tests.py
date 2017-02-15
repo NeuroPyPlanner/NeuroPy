@@ -99,13 +99,13 @@ class TodoTestCase(TestCase):
 
     def test_assign_multiple_todos_to_single_user(self):
         """Test the many-to-one relationship between todo and user works."""
-        todo1 = Todo.objects.all()[0]
-        todo2 = Todo.objects.all()[1]
-        owner = Profile.objects.first()
-        todo1.user, todo2.user = owner, owner
+        todo1 = self.todos[4]
+        todo2 = self.todos[5]
+        owner = self.users[6].profile
+        todo1.owner, todo2.owner = owner, owner
         todo1.save()
         todo2.save()
-        self.assertTrue(Profile.todo.count() == 2)
+        self.assertTrue(owner.todo.count() == 2)
 
 
 class TodoFrontEndTestCase(TestCase):
@@ -154,7 +154,8 @@ class TodoFrontEndTestCase(TestCase):
     def test_edit_todo_default_values(self):
         """Test that the response when calling the edit todo views includes default values."""
         todo = self.todos[0]
+        self.client.force_login(self.users[0])
         response = self.client.get(reverse_lazy(
-            'todo:edit_todo', kwargs={'pk': todo.id})
+            'edit_todo', kwargs={'pk': todo.id})
         )
         self.assertTrue('Edit a To-Do item' in response.content.decode())

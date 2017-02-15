@@ -4,7 +4,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, UpdateView
-
 from userprofile.forms import ProfileForm
 from userprofile.models import Profile
 
