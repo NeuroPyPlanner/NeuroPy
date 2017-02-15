@@ -8,7 +8,13 @@
          "treating_dis":"ADD/ADHD",
          "half_life":"03:30:00",
          "ramp_up":"03:30:00",
-         "peak_period":"07:00:00"
+         "peak_period":"04:30:00",
+         "easy_start":"0:00:00",
+         "easy_end":"16:00:00",     
+         "medium_start":"03:30:00", 
+         "medium_end":"12:00:00", 
+         "peak_start":"05:00:00", 
+         "peak_end":"09:30:00", 
       }
    },
    {  
@@ -20,7 +26,13 @@
          "treating_dis":"ADD/ADHD",
          "half_life":"10:00:00",
          "ramp_up":"07:00:00",
-         "peak_period":"04:00:00"
+         "peak_period":"04:00:00",
+         "easy_start":"0:00:00",
+         "easy_end":"16:00:00",     
+         "medium_start":"03:30:00", 
+         "medium_end":"12:00:00", 
+         "peak_start":"05:00:00", 
+         "peak_end":"09:30:00", 
       }
    },
    {  
@@ -32,7 +44,13 @@
          "treating_dis":"ADD/ADHD",
          "half_life":"07:00:00",
          "ramp_up":"06:30:00",
-         "peak_period":"06:00:00"
+         "peak_period":"06:00:00",
+         "easy_start":"00:00:00",
+         "easy_end":"16:00:00",     
+         "medium_start":"00:45:00", 
+         "medium_end":"11:00:00", 
+         "peak_start":"01:30:00", 
+         "peak_end":"08:0=0:00", 
       }
    },
    {  
@@ -44,7 +62,13 @@
          "treating_dis":"ADD/ADHD",
          "half_life":"03:30:00",
          "ramp_up":"07:00:00",
-         "peak_period":"06:00:00"
+         "peak_period":"06:00:00",
+         "easy_start":"0:00:00",
+         "easy_end":"16:00:00",     
+         "medium_start":"03:30:00", 
+         "medium_end":"12:00:00", 
+         "peak_start":"05:00:00", 
+         "peak_end":"09:30:00", 
       }
    },
    {  
@@ -56,7 +80,13 @@
          "treating_dis":"ADD/ADHD",
          "half_life":"11:00:00",
          "ramp_up":"02:00:00",
-         "peak_period":"04:00:00"
+         "peak_period":"04:00:00",
+         "easy_start":"0:00:00",
+         "easy_end":"16:00:00",     
+         "medium_start":"00:45:00", 
+         "medium_end":"12:00:00", 
+         "peak_start":"01:15:00", 
+         "peak_end":"06:45:00", 
       }
    }
 ]
