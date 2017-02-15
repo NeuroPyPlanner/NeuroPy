@@ -35,6 +35,10 @@ class ProfileFormView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         """When medication is chosen, schedule the user's todos."""
+        return HttpResponseRedirect(self.get_success_url())
+
+    def todo_buckets(self):
+        """Take all the user's todo items and sorts them by ease/priority."""
 
 
 class EditProfile(LoginRequiredMixin, UpdateView):
