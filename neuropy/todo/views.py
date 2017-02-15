@@ -13,6 +13,8 @@ from userprofile.models import Profile
 from django.shortcuts import get_object_or_404
 from apiclient import discovery
 import datetime
+from django.http import HttpResponse
+from oauth2client.contrib.django_util import decorators
 
 
 class AddTodo(LoginRequiredMixin, CreateView):
@@ -79,12 +81,24 @@ class DetailTodo(UserPassesTestMixin, DetailView):
         return todo.owner.user == self.request.user
 
 
-def calendar_get(http, now=datetime.datetime.utcnow().isoformat() + 'Z'):
+def calendar_get(http, date):
     """Get and return users calendar."""
+    year, month, day, = date.split('-')
+    start = datetime.date(
+        year=int(year), month=int(month), day=int(day)
+    ).isoformat() + 'T00:00:01-08:00'
+    end = datetime.date(
+        year=int(year), month=int(month), day=int(day)
+    ).isoformat() + 'T23:59:59-08:00'
     service = discovery.build('calendar', 'v3', http=http)
     events_result = service.events().list(
-        calendarId='primary', timeMin=now, singleEvents=True,
-        orderBy='startTime').execute()
+        calendarId='primary',
+        timeMin=start,
+        timeMax=end,
+        singleEvents=True,
+        orderBy='startTime',
+        timeZone='PST'
+    ).execute()
     return events_result.get('items', [])
 
 
