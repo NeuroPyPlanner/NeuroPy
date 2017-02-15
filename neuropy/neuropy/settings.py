@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'userprofile',
     'todo',
     'bootstrap3',
+    'oauth2client.contrib.django_util'
 ]
 
 MIDDLEWARE = [
@@ -82,10 +83,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'neuropy',
-        'USER': os.environ.get("USER_NAME", ''),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        # 'USER': os.environ.get("USER_NAME", ''),
+        # 'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '5432',
         'TEST': {
             'NAME': 'test_neuropy'
         }
@@ -110,6 +111,18 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+GOOGLE_OAUTH2_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
+
+GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
+
+GOOGLE_OAUTH2_SCOPES = ('https://www.googleapis.com/auth/calendar',)
+
+GOOGLE_OAUTH2_STORAGE_MODEL = {
+    'model': 'userprofile.models.CredentialsModel',
+    'user_property': 'user_id',
+    'credentials_property': 'credential',
+}
 
 
 # Internationalization

@@ -11,6 +11,8 @@ from todo.models import Todo
 from todo.forms import TodoForm
 from userprofile.models import Profile
 from django.shortcuts import get_object_or_404
+from apiclient import discovery
+import datetime
 
 
 class AddTodo(LoginRequiredMixin, CreateView):
@@ -41,7 +43,7 @@ class EditTodo(LoginRequiredMixin, UpdateView):
     login_required = True
 
     model = Todo
-    template_name = "todo/add_todo.html"
+    template_name = "todo/edit_todo.html"
 
     form_class = TodoForm
 
@@ -75,3 +77,26 @@ class DetailTodo(UserPassesTestMixin, DetailView):
         """Override the userpassestest test_func."""
         todo = get_object_or_404(Todo, id=self.kwargs['pk'])
         return todo.owner.user == self.request.user
+
+
+def calendar_get(http, now=datetime.datetime.utcnow().isoformat() + 'Z'):
+    """Get and return users calendar."""
+    service = discovery.build('calendar', 'v3', http=http)
+    events_result = service.events().list(
+        calendarId='primary', timeMin=now, singleEvents=True,
+        orderBy='startTime').execute()
+    return events_result.get('items', [])
+
+
+def calender_insert(http, event):
+    """Insert entries and calender."""
+    service = discovery.build('calendar', 'v3', http=http)
+    event = service.events().insert(calendarId='prmary', body=event).execute()
+    return event
+
+
+def calender_update(http, event):
+    """Insert entries and calender."""
+    service = discovery.build('calendar', 'v3', http=http)
+    event = service.events().update(calendarId='prmary', body=event).execute()
+    return event
