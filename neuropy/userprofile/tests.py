@@ -157,10 +157,9 @@ class FrontendTestCases(TestCase):
         self.assertTrue('Bob Dole' in html)
         self.assertTrue('bobdole' in html)
         self.assertTrue('awesome@gmail.com' in html)
-        self.assertTrue('Active Period Start: 8 a.m.' in html)
-        self.assertTrue('Active Period End: 10 p.m.' in html)
-        self.assertTrue('Peak Period: Morning' in html)
-        self.assertTrue('Dose Time: 8 a.m.' in html)
+        self.assertTrue('8 a.m.' in html)
+        self.assertTrue('10 p.m.' in html)
+        self.assertTrue('Morning' in html)
 
     def test_edit_route_shows_info(self):
         """Test_edit_route_shows_info."""
@@ -200,10 +199,9 @@ class FrontendTestCases(TestCase):
         self.assertTrue('Sam Glad' in html)
         self.assertTrue('bobdole' in html)
         self.assertTrue('samglad@gmail.com' in html)
-        self.assertTrue('Active Period Start: 9 a.m.' in html)
-        self.assertTrue('Active Period End: 11 p.m.' in html)
-        self.assertTrue('Peak Period: early_bird' in html)
-        self.assertTrue('Dose Time: 9 a.m.' in html)
+        self.assertTrue('9 a.m.' in html)
+        self.assertTrue('11 p.m.' in html)
+        self.assertTrue('early_bird' in html)
 
     def test_edit_will_redirect_to_profile(self):
         """Test edit will redirect to profile."""
