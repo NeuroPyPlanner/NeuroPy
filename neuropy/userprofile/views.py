@@ -40,6 +40,18 @@ class ProfileFormView(LoginRequiredMixin, FormView):
     def todo_buckets(self):
         """Take all the user's todo items and sorts them by ease/priority."""
 
+    def test_overlap(self):
+        """Test if calendar event generated from todo overlaps other events."""
+
+    def generate_calendar_event(self):
+        """Take a todo item and turn it into a calendar event."""
+
+    def insert_calendar_event(self):
+        """Insert an approved calendar event into the user's calendar."""
+
+    def assign_time(self):
+        """Take a todo item and assign it to a time based on difficulty."""
+
 
 class EditProfile(LoginRequiredMixin, UpdateView):
     """Edit users profile."""
