@@ -19,12 +19,12 @@ class Medication(models.Model):
     half_life = models.DurationField()
     ramp_up = models.DurationField()
     peak_period = models.DurationField()
-    easy_start = models.CharField(validators=validate_comma_separated_integer_list, max_length=50)
-    easy_end = models.CharField(validators=validate_comma_separated_integer_list, max_length=50)
-    medium_start = models.CharField(validators=validate_comma_separated_interger_list, max_length=50)
-    medium_end = models.CharField(validators=validate_comma_separated_integer_list, max_length=50)
-    peak_start = models.CharField(validators=validate_comma_separated_integer_list, max_length=50)
-    peak_end = models.CharField(validators=validate_comma_separated_integer_list, max_length=50)
+    easy_start = models.CharField(validators=[validate_comma_separated_integer_list], max_length=50)
+    easy_end = models.CharField(validators=[validate_comma_separated_integer_list], max_length=50)
+    medium_start = models.CharField(validators=[validate_comma_separated_integer_list], max_length=50)
+    medium_end = models.CharField(validators=[validate_comma_separated_integer_list], max_length=50)
+    peak_start = models.CharField(validators=[validate_comma_separated_integer_list], max_length=50)
+    peak_end = models.CharField(validators=[validate_comma_separated_integer_list], max_length=50)
     # Ease_priority_matrix=models.CharField
 
     def __str__(self):
