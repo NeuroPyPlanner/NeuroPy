@@ -246,3 +246,9 @@ class FrontendTestCases(TestCase):
         self.assertTemplateUsed(response, "neuropy/base.html")
         self.assertTemplateUsed(response, "neuropy/layout.html")
         self.assertTemplateUsed(response, "userprofile/edit_profile.html")
+
+    def test_profile_includes_medication_table(self):
+        """Test that the user profile page includes the medication table."""
+        response = self.client.get(reverse_lazy('profile'))
+        parsed_html = BeautifulSoup(response.content, 'html5lib')
+        self.assertTrue(parsed_html.find('p').text == ' Terms of Service ')
