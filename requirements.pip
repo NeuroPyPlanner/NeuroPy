@@ -1,11 +1,16 @@
 appnope==0.1.0
+beautifulsoup4==4.5.3
 decorator==4.0.11
 Django==1.10.5
+django-bootstrap3==8.1.0
+django-registration==2.2
 factory-boy==2.8.1
 Faker==0.7.7
+html5lib==0.999999999
 ipython==5.2.2
 ipython-genutils==0.1.0
 pexpect==4.2.1
+pickleshare==0.7.4
 prompt-toolkit==1.0.13
 psycopg2==2.6.2
 ptyprocess==0.5.1
@@ -15,3 +20,7 @@ simplegeneric==0.8.1
 six==1.10.0
 traitlets==4.3.1
 wcwidth==0.1.7
+webencodings==0.5
+jsonpickle==0.9.4
+google-api-python-client==1.6.2
+oauth2client==4.0.0

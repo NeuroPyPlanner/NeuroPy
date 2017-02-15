@@ -23,6 +23,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+neuroEnv/
 bin/
 man/
 pip-selfcheck.json

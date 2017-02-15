@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'medication',
+    'neuropy',
+    'userprofile',
+    'todo',
+    'bootstrap3',
+    'oauth2client.contrib.django_util'
 ]
 
 MIDDLEWARE = [
@@ -78,10 +84,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'neuropy',
         'USER': os.environ.get("USER_NAME", ''),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
         'HOST': '127.0.0.1',
         'PORT': '5432',
         'TEST': {
-            'NAME': 'test_imager'
+            'NAME': 'test_neuropy'
         }
     }
 }
@@ -105,6 +112,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+GOOGLE_OAUTH2_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
+
+GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
+
+GOOGLE_OAUTH2_SCOPES = ('https://www.googleapis.com/auth/calendar',)
+
+GOOGLE_OAUTH2_STORAGE_MODEL = {
+    'model': 'userprofile.models.CredentialsModel',
+    'user_property': 'user_id',
+    'credentials_property': 'credential',
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -124,3 +143,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+ACCOUNT_ACTIVATION_DAYS = 7
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+LOGIN_REDIRECT_URL = '/'
