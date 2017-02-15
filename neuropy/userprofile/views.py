@@ -17,6 +17,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
     slug_field = 'id'
 
     def get_context_data(self, **kwargs):
+        """Attach form to detail view page."""
         context = super(ProfileView, self).get_context_data(**kwargs)
         context['form'] = MedicationForm
         return context
@@ -25,10 +26,15 @@ class ProfileView(LoginRequiredMixin, DetailView):
         """Return logged in user."""
         return self.request.user
 
+
 class ProfileFormView(LoginRequiredMixin, FormView):
     """Form view for reference by profile view so we can include a form."""
+
     form_class = MedicationForm
     success_url = reverse_lazy('profile')
+
+    def form_valid(self, form):
+        """When medication is chosen, schedule the user's todos."""
 
 
 class EditProfile(LoginRequiredMixin, UpdateView):
