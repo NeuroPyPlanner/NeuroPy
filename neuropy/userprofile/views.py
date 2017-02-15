@@ -3,8 +3,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, UpdateView
-from userprofile.forms import ProfileForm
+from django.views.generic import DetailView, UpdateView, FormView
+from userprofile.forms import ProfileForm, MedicationForm
 from userprofile.models import Profile
 
 
@@ -16,9 +16,19 @@ class ProfileView(LoginRequiredMixin, DetailView):
     template_name = 'userprofile/profile.html'
     slug_field = 'id'
 
+    def get_context_data(self, **kwargs):
+        context = super(ProfileView, self).get_context_data(**kwargs)
+        context['form'] = MedicationForm
+        return context
+
     def get_object(self):
         """Return logged in user."""
         return self.request.user
+
+class ProfileFormView(LoginRequiredMixin, FormView):
+    """Form view for reference by profile view so we can include a form."""
+    form_class = MedicationForm
+    success_url = reverse_lazy('profile')
 
 
 class EditProfile(LoginRequiredMixin, UpdateView):

@@ -2,6 +2,7 @@
 
 from django import forms
 from userprofile.models import Profile
+from medication.models import Medication
 
 
 class ProfileForm(forms.ModelForm):
@@ -22,4 +23,29 @@ class ProfileForm(forms.ModelForm):
         """Model for form and fields to exclude."""
 
         model = Profile
+        exclude = []
+
+
+class MedicationForm(forms.ModelForm):
+    """Create a form allowing the user to base the schedule on a medication."""
+
+    def __init__(self, *args, **kwargs):
+        """Set up form fields."""
+        MEDICATION_CHOICES = (
+            ("CONCERTA", "Concerta"),
+            ("ADDERALL", "Adderall"),
+            ("FOCALIN", "Focalin"),
+            ("Ritalin LA", "Ritalin LA"),
+            ("Vyvanse", "Vyvanse")
+        )
+        super(ProfileForm, self).__init__(*args, **kwargs)
+        self.fields["Medication: "] = forms.ChoiceField(
+            widget=forms.RadioSelect,
+            choices=MEDICATION_CHOICES,
+        )
+
+    class Meta:
+        """Model for form and fields to exclude."""
+
+        model = Medication
         exclude = []

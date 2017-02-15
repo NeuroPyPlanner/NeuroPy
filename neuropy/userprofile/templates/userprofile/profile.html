@@ -21,4 +21,10 @@
     <li><strong>Peak Period: </strong>{{ user.profile.peak_period }}</li>
     <li><strong>Dose Time: </strong>{{ user.profile.dose_time }}</li>
 </ul>
+<form method="POST" action="{% url 'profile_form' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Generate Schedule" class="btn btn-primary"/>
+</form>
 {% endblock %}
+g
