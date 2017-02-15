@@ -117,3 +117,22 @@ class TodoFrontEndTestCase(TestCase):
         response = self.client.get(reverse_lazy("list_todo"))
         self.assertTemplateUsed(response, "neuropy/layout.html")
         self.assertTemplateUsed(response, "todo/list_todo.html")
+
+    def test_todo_detail_route_is_status_ok(self):
+        """Funcional test for todo list."""
+        self.client.force_login(self.users[0])
+        todo = self.todos[0]
+        todo.owner = self.users[0].profile
+        todo.save()
+        response = self.client.get('/profile/todo/' + str(todo.pk))
+        self.assertTrue(response.status_code == 200)
+
+    def test_todo_detail_route_uses_right_templates(self):
+        """Test todo list returns the right templates."""
+        self.client.force_login(self.users[0])
+        todo = self.todos[0]
+        todo.owner = self.users[0].profile
+        todo.save()
+        response = self.client.get('/profile/todo/' + str(todo.pk))
+        self.assertTemplateUsed(response, "neuropy/layout.html")
+        self.assertTemplateUsed(response, "todo/detail_todo.html")
