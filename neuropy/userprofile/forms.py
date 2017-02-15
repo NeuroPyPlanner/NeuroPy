@@ -26,26 +26,20 @@ class ProfileForm(forms.ModelForm):
         exclude = []
 
 
-class MedicationForm(forms.ModelForm):
+
+
+class MedicationForm(forms.Form):
     """Create a form allowing the user to base the schedule on a medication."""
 
-    def __init__(self, *args, **kwargs):
-        """Set up form fields."""
-        MEDICATION_CHOICES = (
-            ("CONCERTA", "Concerta"),
-            ("ADDERALL", "Adderall"),
-            ("FOCALIN", "Focalin"),
-            ("Ritalin LA", "Ritalin LA"),
-            ("Vyvanse", "Vyvanse")
-        )
-        super(ProfileForm, self).__init__(*args, **kwargs)
-        self.fields["Medication: "] = forms.ChoiceField(
-            widget=forms.RadioSelect,
-            choices=MEDICATION_CHOICES,
-        )
-
-    class Meta:
-        """Model for form and fields to exclude."""
-
-        model = Medication
-        exclude = []
+    MEDICATION_CHOICES = (
+        ("CONCERTA", "Concerta"),
+        ("ADDERALL", "Adderall"),
+        ("FOCALIN", "Focalin"),
+        ("Ritalin LA", "Ritalin LA"),
+        ("Vyvanse", "Vyvanse")
+    )
+    
+    medication = forms.ChoiceField(
+        widget=forms.RadioSelect,
+        choices=MEDICATION_CHOICES,
+    )
