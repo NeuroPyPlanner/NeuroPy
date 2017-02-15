@@ -1,8 +1,10 @@
 """Test for todo app."""
 
-from django.test import TestCase
-from todo.models import Todo
 from django.contrib.auth.models import User, Group
+from django.test import TestCase, Client, RequestFactory
+from django.urls import reverse_lazy
+
+from todo.models import Todo
 from userprofile.models import Profile
 import factory
 
@@ -97,6 +99,21 @@ class TodoFrontEndTestCase(TestCase):
 
     def setUp(self):
         """The setup and buildout for users, todos."""
+        self.client = Client()
+        self.request = RequestFactory()
         add_user_group()
         self.users = [UserFactory.create() for i in range(20)]
         self.todos = [TodoFactory.create() for i in range(20)]
+
+    def test_todo_list_route_is_status_ok(self):
+        """Funcional test for todo list."""
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy("list_todo"))
+        self.assertTrue(response.status_code == 200)
+
+    def test_todo_list_route_uses_right_templates(self):
+        """Test todo list returns the right templates."""
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy("list_todo"))
+        self.assertTemplateUsed(response, "neuropy/layout.html")
+        self.assertTemplateUsed(response, "todo/list_todo.html")
