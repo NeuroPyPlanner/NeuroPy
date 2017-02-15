@@ -2,6 +2,12 @@
  * Globals
  */
 
+ @import url('https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed:300|Pacifico');
+
+/*font-family: 'Pacifico', cursive;
+font-family: 'Open Sans Condensed', sans-serif;
+font-family: 'Open Sans', sans-serif;*/
+
 /* Links */
 a,
 a:focus,
@@ -27,12 +33,27 @@ a:hover {
 html,
 body {
   height: 100%;
-  background-color: #333;
+  /*background-color: #333;*/
 }
 body {
   color: #fff;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0,0,0,.5);
+  font-family: 'Open Sans', bold, sans-serif;
+}
+
+body {
+/*  padding-top: 50px;
+  font-size: 100%;
+  color: #3c3c3c;
+  background-color: #fff;*/
+  position: relative;
+  background-image:
+  linear-gradient(rgba(0, 0, 0, 0.3),
+      rgba(0, 0, 0, 0.3)), url('pexels-photo-109019.jpeg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 /* Extra markup and styles for table-esque vertical and horizontal centering */
@@ -115,6 +136,10 @@ body {
 .cover .btn-lg {
   padding: 10px 20px;
   font-weight: bold;
+}
+
+.cover-heading {
+  font-family: 'Pacifico', cursive;
 }
 
 
