@@ -2,7 +2,7 @@
    {  
       "pk":1,
       "model":"medication.medication",
-      "fields":{  
+      "fields":{
          "easy_start":"0:00:00",
          "peak_end":"09:30:00",
          "easy_end":"16:00:00",
@@ -20,7 +20,7 @@
    {  
       "pk":2,
       "model":"medication.medication",
-      "fields":{  
+      "fields":{
          "easy_start":"0:00:00",
          "peak_end":"09:30:00",
          "easy_end":"16:00:00",
