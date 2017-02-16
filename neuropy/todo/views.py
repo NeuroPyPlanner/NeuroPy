@@ -8,6 +8,8 @@ from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         UserPassesTestMixin,
                                         )
 from todo.models import Todo
+from medication.models import Medication
+from userprofile.models import Profile
 from todo.forms import TodoForm
 from userprofile.models import Profile
 from django.shortcuts import get_object_or_404
@@ -100,3 +102,41 @@ def calender_update(http, event):
     service = discovery.build('calendar', 'v3', http=http)
     event = service.events().update(calendarId='prmary', body=event).execute()
     return event
+
+
+class CreateScheduleView(UserPassesTestMixin, DetailView):
+    """Create schedule in order of priority."""
+
+    login_url = reverse_lazy('login')
+    login_required = True
+    model = Todo
+    template_name = "todo/create_schedule.html"
+
+    def create_event_list(self, drug_name):
+        """Create dictionary objects to be inserted into google cal."""
+        easy = Todo.objects.filter(ease=1)
+        medium = Todo.objects.filter(ease=2)
+        hard = Todo.objects.filter(ease=3)
+        bucket_list = [priority_now, hard, medium, easy]
+        priority_now = Todo.objects.filter(priority=4).order_by('ease')
+
+        drug = Medication.objects.filter(name=drug_name)
+        post_peak_medium = drug.post_peak_medium_start
+        post_peak_easy = drug.post_peak_easy_start
+        today = datetime.date.today()
+        start_time = datetime.datetime(today.year, today.month, today.day, 9)
+
+        for bucket in bucket_list:
+            events_list = []
+            priority_dict = {}
+
+            for event in bucket:
+                priority_dict['description'] = event.description
+                priority_dict['title'] = event.title
+                priority_dict['start'] = start_time
+                priority_dict['end'] = start_time + datetime.timedelta(hours=event.duration)
+
+                events_list.append(dict(priority_dict))
+                start_time = start_time + datetime.timedelta(hours=event.duration)
+
+        return events_list
