@@ -1,14 +1,16 @@
 language: python
 python:
-  - "2.6"
-  - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
-  - "3.5"
-# command to install dependencies
+- '2.6'
+- '2.7'
+- '3.2'
+- '3.3'
+- '3.4'
+- '3.5'
 install:
-  - pip install .
-  - pip install -r requirements.pip
-# command to run tests
+- pip install .
+- pip install -r requirements.pip
+env:
+  global:
+  - secure: aX6H3EX9hfQFtC4zvukvOdYAmYJSsgsQw8xXkGEGJ3H4XAM+tb5sLJFhQmMVoYS8shS1oq/0rXdLvJDtAUqxfly6Df0luMnJwI3upjYJb4a5SlZHSpGpg2JfvT3CdlHEKWyu4LK/QczKdOannFvqQz7cQysPFmsEoYX2oTzBxlPm4Q7DJ8cmEaSRlvnPfGu/usL48kO2FTsiat8TkVNqvDGowvqmtWsgxzaJbs11nJu1b1mK5wThu2GTizf1wwFvK/H5g6vI+qe/OZT3kpWPDXInDbPWDpFGYNLd/IB00IuFgFqG/84rIpp6Vz7YKkqSw7/fDsWikYeaoZdSR1E+slXyaYfHfheZ5a5/k+NwHlWXc3mTAAi2DrnOYZJyXEVyPW35o9M9ocFAwDudTuTpnUCOkA/K2bKjhf34wNR3eCV1s5BUtxWkkKDJGPNG7CcyhFTYvfNpdJDVIFYcjb9GlNMHrTTFdJyn+FmWVV3Fz58+xh5gzA9cPLJidmM0Tora4tt81zLI79V7Nb0yo0Ug1F3iTM3JD/6SWPoadmRIxEARsr0FoKuFlGTBUkAs2brvX783TKByYUk/Jk/I3PnmlCAi/A5bZtkOCo5dxWQPCC0nJbPNJt0tNranmqqcvIkBsDuV8zYiHlBSjcru6Pqz1yoc02/SY2r3AHuyf6905sY=
+  - secure: O0pOPi+1KGOJMaKqJB+09lRhIsXSNP7ycGn9jsJhvN6XljHBK+bgqWEriSNZ2y01l8GKy+fcnNuiMQLDIc4tQvFkxmYUhoBClkcx12Css1glS9cYpssmbav1YvazKdPL6Y/XdDTtA7na1ggPUaV3Ww4zcIazxOPifnR+Rc5YwGxFBsv0cVRGaAZ8Z7XeqitV7M1DxYa4i2O0hTWQEkw5d9BQH+kZxvervSIE4e4RrPvkopvsXd/Al1djTsJA3ZX0qvCyykuMwANj2ERes9ye2SvP5+etugdmeo267nsXasFN+FO2x+IZYWBNGL8Yl689pOuiGdmvvuP5pG1VYRi+cyk2nMZUC+aN0iuipocfLqJTjaZg7rjdjpRy22M/9eQbMBAUBKHSUkeaLDba+lpvbNiY6ybKQZlwd2pKQZSjHHsAa3lgBG3WduNSCGEKCsKmUgGBRn1c4h5yQFXcHjIRdqr9k21tbF6hCE/LJJoWJEY5XIJIqboitGvNcxWF3qtfau+koTYqH8ZufePOikkKvxiOpoK0bML1HViBdCvSFNB7ioYsLTqXaCN4RhXRUuFrU1O7k4wTZXoLLvyhIYIdnwjpXJX+7HgZq7ieIvAIYkB9rX199xK8cgKb/3WjMGZ7AEF1y4Tay8dRGcAsPu/MUBTSm/BzJvXB+Yy/SrqIXNk=
 script: python3 neuropy/manage.py test
