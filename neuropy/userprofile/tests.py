@@ -247,8 +247,40 @@ class FrontendTestCases(TestCase):
         self.assertTemplateUsed(response, "neuropy/layout.html")
         self.assertTemplateUsed(response, "userprofile/edit_profile.html")
 
-    def test_profile_includes_medication_table(self):
-        """Test that the user profile page includes the medication table."""
+    def test_profile_has_form(self):
+        """Test that the user profile page includes a medication form."""
+        self.client.force_login(self.users[0])
         response = self.client.get(reverse_lazy('profile'))
-        parsed_html = BeautifulSoup(response.content, 'html5lib')
-        self.assertTrue(parsed_html.find('p').text == ' Terms of Service ')
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertTrue(len(parsed_html.find_all('form')) == 1)
+
+    def test_profile_form_has_medication_field(self):
+        """Test that the user profile page includes a medication form."""
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy('profile'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertTrue(len(parsed_html.find_all('p')) == 3)
+
+    def test_access_profile_without_login_fails(self):
+        """Test that a user can't get into a profile without authenticating."""
+        response = self.client.get(reverse_lazy('profile'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_access_edit_profile_without_login_fails(self):
+        """Test that a user can't edit a profile without authenticating."""
+        response = self.client.get(reverse_lazy('edit-profile'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_profile_redirect_login(self):
+        """Test that without a login, profile redirects to login."""
+        response = self.client.get(reverse_lazy('profile'))
+        self.assertRedirects(response, '/accounts/login/?next=/profile/')
+
+    def test_edit_profile_redirect_login(self):
+        """Test that without a login, profile redirects to login."""
+        response = self.client.get(reverse_lazy('edit-profile'))
+        self.assertRedirects(response, '/accounts/login/?next=/profile/edit/')
+
+    def test_

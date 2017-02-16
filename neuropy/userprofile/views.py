@@ -6,8 +6,6 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, UpdateView, FormView
 from userprofile.forms import ProfileForm, MedicationForm
 from userprofile.models import Profile
-from medication.models import Medication
-from todo.models import Todo
 
 
 class ProfileView(LoginRequiredMixin, DetailView):
@@ -34,28 +32,6 @@ class ProfileFormView(LoginRequiredMixin, FormView):
 
     form_class = MedicationForm
     success_url = reverse_lazy('profile')
-
-    # def form_valid(self, form):
-    #     """When medication is chosen, schedule the user's todos."""
-    #     return HttpResponseRedirect(self.get_success_url())
-
-    # def sort_tasks_algorithm(self):
-    #     """Flow control and final output forh
-
-    # def todo_buckets(self):
-    #     """Take all the user's todo items and sorts them by ease/priority."""
-
-    # def test_overlap(self):
-    #     """Test if calendar event generated from todo overlaps other events."""
-
-    # def generate_calendar_event(self):
-    #     """Take a todo item and turn it into a calendar event."""
-
-    # def insert_calendar_event(self):
-    #     """Insert an approved calendar event into the user's calendar."""
-
-    # def assign_time(self):
-    #     """Take a todo item and assign it to a time based on difficulty."""
 
 
 class EditProfile(LoginRequiredMixin, UpdateView):
