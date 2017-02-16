@@ -1,17 +1,19 @@
 # NeuroPy
 Personalized CBT-based priority planner
 
-Creators:
+## Creators:
 
-Amos Bolder Claire Gatenby Patrick Saunders Sera Smith
+Amos Bolder | Claire Gatenby | Patrick Saunders | Sera Smith
 
-URL: http://
+### URL: http://
 
+### About the App:
 A personalized priority app to support a *Cognitive Behavioral Therapy* (CBT) approach to efficiently organize your day according to a struggle/disorder that is effectively treated by CBT. CBT is a goal-oriented pyschotherapy treatment, taking a hands-on approach to problem solving. Goal of CBT is to change the patterns of thinking or behavior that are behind a person's difficulties, modifying their feelings and therefore their thinking and behavior overtime.
 
 *Neuropy* Considers what the habit/disorder the user wants to treat with CBT, along with medication, it's half-life and peak periods. Also works around black-out periods on user's schedule by syncing with Google Calender, personal preference or most productive period of the day for user, and finally considers time commitments for each activity. Each "TO-DO" will be ranked considering these aspects and will be worked into periods of the day.
 
-version-0.1 (in active development) Keywords:
+##### version-0.1 (in active development) 
+##### Keywords: 
 
 No medical data is stored by NeuroPy
 
@@ -85,7 +87,7 @@ This application allow users to store and organize photos.
 
 ##Running Tests
 
-Running tests for the django-imager is fairly straightforward. Navigate to the same directory as the manage.py file and type:
+Running tests for the NeuroPy is fairly straightforward. Navigate to the same directory as the manage.py file and type:
 ```
 (NeuroPy) $ coverage run manage.py test
 ```
@@ -121,4 +123,3 @@ This will read from the included .coverage file, with configuration set in the .
 - As a developer I want a narrow open source license so that we retain plenty of rights to our work.
 - As a developer I want to write an algorithm that prioritises todos based on a user’s profile.
 - As a developer I want to integrate the google calendars with my app using an api.
-

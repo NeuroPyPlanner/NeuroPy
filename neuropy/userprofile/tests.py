@@ -281,6 +281,7 @@ class FrontendTestCases(TestCase):
     def test_edit_profile_redirect_login(self):
         """Test that without a login, profile redirects to login."""
         response = self.client.get(reverse_lazy('edit-profile'))
+        import pdb; pdb.set_trace()
         self.assertRedirects(response, '/accounts/login/?next=/profile/edit/')
 
-    def test_
+    # def test_
