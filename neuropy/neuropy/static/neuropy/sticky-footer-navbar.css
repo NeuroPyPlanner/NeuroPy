@@ -38,8 +38,9 @@ nav {
   color: #fff;
 }
 
-.navbar-default .navbar-brand {
+.neuropy {
   font-family: 'Pacifico', cursive;
+  font-size: 2em;
 }
 
 .name {
