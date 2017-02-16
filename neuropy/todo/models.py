@@ -26,6 +26,8 @@ class Todo(models.Model):
     description = models.TextField(blank=True)
     date = models.DateField(blank=True, null=True)
     duration = models.PositiveIntegerField(default=1)
+    start_time = None
+    end_time = None
     ease = models.PositiveIntegerField(choices=EASE_CHOICES, default=1)
     priority = models.PositiveIntegerField(choices=PRIORITY_CHOICES, default=4)
     owner = models.ForeignKey(Profile,
