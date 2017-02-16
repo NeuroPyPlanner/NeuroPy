@@ -288,7 +288,7 @@ class FrontendTestCases(TestCase):
         self.client.force_login(self.users[0])
         html = self.client.get('/profile/edit/').content
         html = BeautifulSoup(html, "html5lib")
-        update = self.client.post('/profile/edit/', {"csrfmiddlewaretoken": "", "First Name": "Bob"})
+        self.client.post('/profile/edit/', {"csrfmiddlewaretoken": "", "First Name": "Bob"})
         html = self.client.get('/profile/').content
         html = str(html)
         self.assertFalse('Bob Glad' in html)
