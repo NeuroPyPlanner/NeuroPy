@@ -11,8 +11,9 @@
             <h1>Edit your profile</h1>
         </div>
 </div>
-<div>
-<form method="post">{% csrf_token %}
+<div class="form-section">
+<form method="post">
+    {% csrf_token %}
     {{ form.as_p }}
     <input class="btn btn-primary" type="submit" value="Update" />
 </form>
