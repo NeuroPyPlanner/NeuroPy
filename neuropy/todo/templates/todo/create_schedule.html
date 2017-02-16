@@ -6,14 +6,16 @@
             <div class='btn-toolbar pull-right'>
                 <div class='btn-group'>
                 <a href="{% url 'add_todo' %}" class="btn">Add Todo</a>
-                <a href="{% url 'sync_calendar' %}" class="btn">Sync with Google Calender</a>
+                {# <a href="{% url 'sync_calendar' %}" class="btn">Sync with Google Calender</a> #}
                 </div>
         </div>
         <h2>Your prioritized schedule for {{todo.date}}</h2>
         </div>
 
-        <h2>{{todo.title}}</h2>
-        <p><strong>Description: </strong>{{todo.description}}</p>
+        {% for todo in todoes %}
+            <h2>{{todo.title}}</h2>
+            <p><strong>Description: </strong>{{todo.description}}</p>
+        {% endfor %}
         <a href="{% url 'create_sched' todo.date %}" class="btn">Create Your Schedule</a>
 
 </section>

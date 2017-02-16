@@ -33,21 +33,4 @@ class Medication(models.Model):
 
     def __str__(self):
         """String representation of Medication."""
-        return "name: {},med_type: {}, treating_dis: {}, half_life: {}, ramp_up: {}, peak_period: {}, easy_start: {}, easy_end: {}, medium_start: {}, medium_end: {}, peak_start: {}, peak_end: {}, post_peak_medium_start: {}, post_peak_medium_end: {}, post_peak_easy_start: {}, post_peak_easy_end: {}".format(
-            self.name,
-            self.med_type,
-            self.treating_dis,
-            self.half_life,
-            self.ramp_up,
-            self.peak_period,
-            self.easy_start,
-            self.easy_end,
-            self.medium_start,
-            self.medium_end,
-            self.peak_start,
-            self.peak_end,
-            self.post_peak_medium_start,
-            self.post_peak_medium_end,
-            self.post_peak_easy_start,
-            self.post_peak_medium_end
-        )
+        return self.name
