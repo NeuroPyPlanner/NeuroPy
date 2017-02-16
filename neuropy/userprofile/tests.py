@@ -281,7 +281,14 @@ class FrontendTestCases(TestCase):
     def test_edit_profile_redirect_login(self):
         """Test that without a login, profile redirects to login."""
         response = self.client.get(reverse_lazy('edit-profile'))
-        import pdb; pdb.set_trace()
         self.assertRedirects(response, '/accounts/login/?next=/profile/edit/')
 
-    # def test_
+    def test_edit_profile_without_csrf_fails(self):
+        """Test a logged in user can't edit their profile without a token."""
+        self.client.force_login(self.users[0])
+        html = self.client.get('/profile/edit/').content
+        html = BeautifulSoup(html, "html5lib")
+        update = self.client.post('/profile/edit/', {"csrfmiddlewaretoken": "", "First Name": "Bob"})
+        html = self.client.get('/profile/').content
+        html = str(html)
+        self.assertFalse('Bob Glad' in html)
