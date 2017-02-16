@@ -1,5 +1,6 @@
 {% extends 'neuropy/layout.html' %}
 {% block content %}
+<section class="form-section">
   <h1>Register</h1>
   <form method="POST" class='form'>
     {% csrf_token %}
@@ -41,4 +42,5 @@
     </div>
     <button type="submit" class="btn btn-primary">Register</button>
   </form>
+  </section>
 {% endblock content %}

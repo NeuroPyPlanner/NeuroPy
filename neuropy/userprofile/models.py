@@ -24,12 +24,12 @@ class Profile(models.Model):
         on_delete=models.CASCADE
     )
     PEAK_PERIOD_CHOICES = [
-        ('early_bird', 'Early Bird'),
+        ('Early Bird', 'Early Bird'),
         ('morning', 'Morning'),
         ('midday', 'Midday'),
         ('afternoon', 'Afternoon'),
         ('evening', 'Evening'),
-        ('night_owl', 'Night Owl'),
+        ('Night Owl', 'Night Owl'),
     ]
     active_period_start = models.TimeField(default=time(hour=8))
     active_period_end = models.TimeField(default=time(hour=22))
