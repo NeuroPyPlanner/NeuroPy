@@ -120,6 +120,24 @@ class TodoFrontEndTestCase(TestCase):
         self.users = [UserFactory.create() for i in range(20)]
         self.todos = [TodoFactory.create() for i in range(20)]
 
+    def make_user_and_login(self):
+        """Make user and login."""
+        add_user_group()
+        user_register = UserFactory.create()
+        user_register.is_active = True
+        user_register.username = "bobdole"
+        user_register.first_name = 'Bob'
+        user_register.last_name = 'Dole'
+        user_register.email = 'awesome@gmail.com'
+        user_register.set_password("rutabega")
+        user_register.save()
+        self.client.post("/login/", {
+            "username": user_register.username,
+            "password": "rutabega"
+
+        })
+        return self.client, user_register
+
     def test_todo_list_route_is_status_ok(self):
         """Funcional test for todo list."""
         self.client.force_login(self.users[0])
@@ -172,6 +190,105 @@ class TodoFrontEndTestCase(TestCase):
         parsed_html = BeautifulSoup(response.content, 'html5lib')
         self.assertTrue(len(parsed_html.find_all('article')) == 1)
 
+    def test_edit_todo_will_change_template(self):
+        """Test edit todo will redirect to profile."""
+        client, user = self.make_user_and_login()
+        todo = self.todos[9]
+        todo.owner = user.profile
+        todo.save()
+
+        response = client.post('/profile/todo/' + str(todo.id) + '/edit/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        }, follow=True)
+        self.assertTrue(b'Todo 1' in response.content)
+
+    def test_edit_todo_will_redirect_to_todo_list(self):
+        """Test edit todo will redirect to todo list."""
+        client, user = self.make_user_and_login()
+        todo = self.todos[9]
+        todo.owner = user.profile
+        todo.save()
+
+        response = client.post('/profile/todo/' + str(todo.id) + '/edit/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        self.assertRedirects(response, '/profile/todo/')
+
+    def test_add_todo_will_redirect_to_todo_list(self):
+        """Test add todo will redirect to todo list."""
+        client, user = self.make_user_and_login()
+
+        response = client.post('/profile/todo/add/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        self.assertRedirects(response, '/profile/todo/')
+
+    def test_add_todo_will_redirect_with_new_content(self):
+        """Test add todo will redirect to todo list with new content."""
+        client, user = self.make_user_and_login()
+
+        response = client.post('/profile/todo/add/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        }, follow=True)
+        self.assertTrue(b'Todo 1' in response.content)
+
+    def test_add_with_missing_fields_will_not_redirect(self):
+        """Test add todo will not redirect if fields missing."""
+        client, user = self.make_user_and_login()
+
+        response = client.post('/profile/todo/add/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+        })
+        self.assertFalse(response.status_code == 302)
+
+    def test_edit_with_missing_fields_will_not_redirect(self):
+        """Test add todo will not redirect if fields missing."""
+        client, user = self.make_user_and_login()
+        todo = self.todos[9]
+        todo.owner = user.profile
+        todo.save()
+
+        response = client.post('/profile/todo/' + str(todo.id) + '/edit/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+        })
+        self.assertFalse(response.status_code == 302)
+
     def test_add_todo_status_code_302(self):
         """Test add todo status code 302."""
         user = self.users[4]
@@ -213,7 +330,6 @@ class TodoFrontEndTestCase(TestCase):
         html = self.client.get('/profile/todo/').content
         html = str(html)
         self.assertTrue('Buy Google' in html)
-        self.assertTrue('Date: Jan. 6, 2017, midnight' in html)
         self.assertTrue('Priority: 1' in html)
 
     def test_add_todo_saves_db_and_shows_to_detail_todo_view(self):
@@ -238,7 +354,6 @@ class TodoFrontEndTestCase(TestCase):
         html = self.client.get('/profile/todo/' + str(pk)).content
         html = str(html)
         self.assertTrue('Buy Google' in html)
-        self.assertTrue('<p><strong>Date: </strong>Jan. 6, 2017, midnight</p>' in html)
         self.assertTrue('<p><strong>Priority: </strong>1</p>' in html)
         self.assertTrue('<p><strong>Ease: </strong>2</p>' in html)
         self.assertTrue('<p><strong>Duration: </strong>4</p>' in html)
@@ -315,7 +430,6 @@ class TodoFrontEndTestCase(TestCase):
         html = self.client.get('/profile/todo/' + str(pk)).content
         html = str(html)
         self.assertTrue('Buy Earth' in html)
-        self.assertTrue('<p><strong>Date: </strong>Feb. 7, 2018, midnight</p>' in html)
         self.assertTrue('<p><strong>Priority: </strong>1</p>' in html)
         self.assertTrue('<p><strong>Ease: </strong>1</p>' in html)
         self.assertTrue('<p><strong>Duration: </strong>3</p>' in html)
