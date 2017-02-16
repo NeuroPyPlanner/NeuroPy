@@ -3,6 +3,7 @@ python:
 - '2.7'
 - '3.5'
 before_install:
+- pip install -U pip setuptools
 - pip install six
 install:
 - pip install -r requirements.pip
