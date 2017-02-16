@@ -11,4 +11,4 @@ install:
   - pip install .
   - pip install -r requirements.pip
 # command to run tests
-script: pytest
+script: python3 neuropy/manage.py test
