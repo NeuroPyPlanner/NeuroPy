@@ -16,12 +16,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{% url 'home' %}">NeuroPy</a>
+          <div class="navbar-btn">
+          <img src="{% static 'neuropy/white-icon.png' %}" height='30px'>
+          </div>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="{% url 'home' %}">Home</a></li>
-          </ul>
+        <ul class="nav navbar-nav">
+          <li class="neuropy"><a href="{% url 'home' %}">NeuroPy</a></li>
+        </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
             <li><a href="{% url 'profile' %}">{{ user.username }}</a></li>

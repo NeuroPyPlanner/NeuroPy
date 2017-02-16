@@ -171,3 +171,152 @@ class TodoFrontEndTestCase(TestCase):
         response = self.client.get(reverse_lazy("list_todo"))
         parsed_html = BeautifulSoup(response.content, 'html5lib')
         self.assertTrue(len(parsed_html.find_all('article')) == 1)
+
+    def test_add_todo_status_code_302(self):
+        """Test add todo status code 302."""
+        user = self.users[4]
+        self.client.force_login(user)
+        html = self.client.get('/profile/todo/add/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        response = self.client.post('/profile/todo/add/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Google",
+            "description": "Then Buy Amazon",
+            "date_month": "1",
+            "date_day": "6",
+            "date_year": "2017",
+            "duration": "4",
+            "ease": "2",
+            "priority": "1",
+        })
+        self.assertTrue(response.status_code == 302)
+
+    def test_add_todo_saves_db_and_shows_to_list(self):
+        """Test add todo saves db and shows to list."""
+        user = self.users[4]
+        self.client.force_login(user)
+        html = self.client.get('/profile/todo/add/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        self.client.post('/profile/todo/add/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Google",
+            "description": "Then Buy Amazon",
+            "date_month": "1",
+            "date_day": "6",
+            "date_year": "2017",
+            "duration": "4",
+            "ease": "2",
+            "priority": "1",
+        })
+        html = self.client.get('/profile/todo/').content
+        html = str(html)
+        self.assertTrue('Buy Google' in html)
+        self.assertTrue('Date: Jan. 6, 2017, midnight' in html)
+        self.assertTrue('Priority: 1' in html)
+
+    def test_add_todo_saves_db_and_shows_to_detail_todo_view(self):
+        """Test add todo saves db and shows to detail todo view."""
+        user = self.users[4]
+        self.client.force_login(user)
+        html = self.client.get('/profile/todo/add/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        self.client.post('/profile/todo/add/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Google",
+            "description": "Then Buy Amazon",
+            "date_month": "1",
+            "date_day": "6",
+            "date_year": "2017",
+            "duration": "4",
+            "ease": "2",
+            "priority": "1",
+        })
+        pk = Todo.objects.get(title='Buy Google').id
+        html = self.client.get('/profile/todo/' + str(pk)).content
+        html = str(html)
+        self.assertTrue('Buy Google' in html)
+        self.assertTrue('<p><strong>Date: </strong>Jan. 6, 2017, midnight</p>' in html)
+        self.assertTrue('<p><strong>Priority: </strong>1</p>' in html)
+        self.assertTrue('<p><strong>Ease: </strong>2</p>' in html)
+        self.assertTrue('<p><strong>Duration: </strong>4</p>' in html)
+        self.assertTrue('<p><strong>Description: </strong>Then Buy Amazon</p>' in html)
+
+    def test_edit_todo_status_code_302(self):
+        """Test edit todo status code 302."""
+        user = self.users[4]
+        self.client.force_login(user)
+        html = self.client.get('/profile/todo/add/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        self.client.post('/profile/todo/add/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Google",
+            "description": "Then Buy Amazon",
+            "date_month": "1",
+            "date_day": "6",
+            "date_year": "2017",
+            "duration": "4",
+            "ease": "2",
+            "priority": "1",
+        })
+        pk = Todo.objects.get(title='Buy Google').id
+        html = self.client.get('/profile/todo/' + str(pk) + '/edit/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        response = self.client.post('/profile/todo/' + str(pk) + '/edit/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Earth",
+            "description": "Then Buy 7/11",
+            "date_month": "2",
+            "date_day": "7",
+            "date_year": "2018",
+            "duration": "3",
+            "ease": "1",
+            "priority": "1",
+        })
+        self.assertTrue(response.status_code == 302)
+
+    def test_edit_todo_saves_db_and_shows_to_detail_todo_view(self):
+        """Test edit todo saves db and shows to detail todo view."""
+        user = self.users[4]
+        self.client.force_login(user)
+        html = self.client.get('/profile/todo/add/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        self.client.post('/profile/todo/add/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Google",
+            "description": "Then Buy Amazon",
+            "date_month": "1",
+            "date_day": "6",
+            "date_year": "2017",
+            "duration": "4",
+            "ease": "2",
+            "priority": "1",
+        })
+        pk = Todo.objects.get(title='Buy Google').id
+        html = self.client.get('/profile/todo/' + str(pk) + '/edit/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        self.client.post('/profile/todo/' + str(pk) + '/edit/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Earth",
+            "description": "Then Buy 7/11",
+            "date_month": "2",
+            "date_day": "7",
+            "date_year": "2018",
+            "duration": "3",
+            "ease": "1",
+            "priority": "1",
+        })
+        html = self.client.get('/profile/todo/' + str(pk)).content
+        html = str(html)
+        self.assertTrue('Buy Earth' in html)
+        self.assertTrue('<p><strong>Date: </strong>Feb. 7, 2018, midnight</p>' in html)
+        self.assertTrue('<p><strong>Priority: </strong>1</p>' in html)
+        self.assertTrue('<p><strong>Ease: </strong>1</p>' in html)
+        self.assertTrue('<p><strong>Duration: </strong>3</p>' in html)
+        self.assertTrue('<p><strong>Description: </strong>Then Buy 7/11</p>' in html)

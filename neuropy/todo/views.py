@@ -183,8 +183,7 @@ class ScheduleView(TemplateView):
     def get(self, request, *args, **kwargs):
         """Get the data and render."""
         context = self.get_context_data(**kwargs)
-        token_expired = request.oauth.credentials.access_token_expired
-        if request.oauth.has_credentials() and not token_expired:
+        if request.oauth.has_credentials() and not request.oauth.credentials.access_token_expired:
             now = str(datetime.datetime.now()).split()[0]
             events = calendar_get(request.oauth.http, now)
             context["events"] = events

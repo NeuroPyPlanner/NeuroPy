@@ -201,7 +201,7 @@ class FrontendTestCases(TestCase):
             "Email": "samglad@gmail.com",
             "active_period_start": "09:00:00",
             "active_period_end": "23:00:00",
-            "peak_period": "early_bird",
+            "peak_period": "afternoon",
             "dose_time": "09:00:00"
         })
         html = client.get('/profile/').content
@@ -211,7 +211,7 @@ class FrontendTestCases(TestCase):
         self.assertTrue('samglad@gmail.com' in html)
         self.assertTrue('9 a.m.' in html)
         self.assertTrue('11 p.m.' in html)
-        self.assertTrue('early_bird' in html)
+        self.assertTrue('afternoon' in html)
 
     def test_edit_will_redirect_to_profile(self):
         """Test edit will redirect to profile."""
@@ -226,7 +226,7 @@ class FrontendTestCases(TestCase):
             "Email": "samglad@gmail.com",
             "active_period_start": "09:00:00",
             "active_period_end": "23:00:00",
-            "peak_period": "early_bird",
+            "peak_period": "afternoon",
             "dose_time": "09:00:00"
         })
         self.assertRedirects(response, '/profile/')
