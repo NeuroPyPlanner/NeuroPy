@@ -1,1 +1,20 @@
-create_schedule.html
+{% extends 'neuropy/layout.html' %}
+{% block content %}
+
+<div class="row">
+        <div class='page-header'>
+            <div class='btn-toolbar pull-right'>
+                <div class='btn-group'>
+                <a href="{% url 'add_todo' %}" class="btn">Add Todo</a>
+                <a href="{% url 'sync_calendar' %}" class="btn">Sync with Google Calender</a>
+                </div>
+        </div>
+        <h2>Your prioritized schedule for {{todo.date}}</h2>
+        </div>
+
+        <h2>{{todo.title}}</h2>
+        <p><strong>Description: </strong>{{todo.description}}</p>
+        <a href="{% url 'create_sched' todo.date %}" class="btn">Create Your Schedule</a>
+
+</section>
+{% endblock %}
