@@ -112,23 +112,31 @@ class CreateScheduleView(UserPassesTestMixin, DetailView):
     model = Todo
     template_name = "todo/create_schedule.html"
 
-    def create_event_list(self, drug_name):
+    def create_event_list(drug_name):
         """Create dictionary objects to be inserted into google cal."""
         easy = Todo.objects.filter(ease=1)
         medium = Todo.objects.filter(ease=2)
         hard = Todo.objects.filter(ease=3)
-        bucket_list = [priority_now, hard, medium, easy]
         priority_now = Todo.objects.filter(priority=4).order_by('ease')
+        bucket_list = [priority_now, hard, medium, easy]
+        print(bucket_list)
 
-        drug = Medication.objects.filter(name=drug_name)
-        post_peak_medium = drug.post_peak_medium_start
-        post_peak_easy = drug.post_peak_easy_start
         today = datetime.date.today()
         start_time = datetime.datetime(today.year, today.month, today.day, 9)
 
-        for bucket in bucket_list:
-            events_list = []
+        def td(time):
+            pt = datetime.datetime.strptime(time, '%H:%M:%S')
+            return pt.second + pt.minute + pt.hour * 3600
+
+        drug = Medication.objects.get(name=drug_name)
+        peak_end = start_time + datetime.timedelta(hours=td(drug.peak_end))
+        medium_start = start_time + datetime.timedelta(hours=td(drug.post_peak_medium_start))
+        easy_start = start_time + datetime.timedelta(hours=td(drug.post_peak_easy_start))
+
+        events_list = []
+        for idx, bucket in enumerate(bucket_list):
             priority_dict = {}
+            print('Event List: ', events_list)
 
             for event in bucket:
                 priority_dict['description'] = event.description
@@ -136,7 +144,19 @@ class CreateScheduleView(UserPassesTestMixin, DetailView):
                 priority_dict['start'] = start_time
                 priority_dict['end'] = start_time + datetime.timedelta(hours=event.duration)
 
+                if idx == 0 or idx == 1:
+                    priority_dict['ease'] = 'hard'
+
+                if idx == 2 and priority_dict['start'] < peak_end:
+                    priority_dict['ease'] = 'hard'
+                    print (priority_dict['start'])
+                elif idx == 3 and priority_dict['start'] < easy_start:
+                    priority_dict['ease'] = 'medium'
+                    print (easy_start)
+
                 events_list.append(dict(priority_dict))
+
                 start_time = start_time + datetime.timedelta(hours=event.duration)
+            print('priority_dict: ', priority_dict)
 
         return events_list
