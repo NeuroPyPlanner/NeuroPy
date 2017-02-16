@@ -2,8 +2,7 @@
  * Globals
  */
 
- @import url('https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed:300|Pacifico');
-
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Pacifico|Sansita');
 /*font-family: 'Pacifico', cursive;
 font-family: 'Open Sans Condensed', sans-serif;
 font-family: 'Open Sans', sans-serif;*/
@@ -33,20 +32,12 @@ a:hover {
 html,
 body {
   height: 100%;
-  /*background-color: #333;*/
 }
 body {
   color: #fff;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0,0,0,.5);
   font-family: 'Open Sans', bold, sans-serif;
-}
-
-body {
-/*  padding-top: 50px;
-  font-size: 100%;
-  color: #3c3c3c;
-  background-color: #fff;*/
   position: relative;
   background-image:
   linear-gradient(rgba(0, 0, 0, 0.3),
