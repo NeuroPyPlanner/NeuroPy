@@ -187,8 +187,14 @@ class ScheduleView(TemplateView):
             events = calendar_get(request.oauth.http, now)
             context["events"] = events
             for event in events:
-                event["start"]["dateTime"] = dateutil.parser.parse(event["start"]["dateTime"])
-                event["end"]["dateTime"] = dateutil.parser.parse(event["end"]["dateTime"])
+                try:
+                    event["start"]["dateTime"] = dateutil.parser.parse(event["start"]["dateTime"])
+                except KeyError:
+                    event["start"]["dateTime"] = 'No Time Specified'
+                try:
+                    event["end"]["dateTime"] = dateutil.parser.parse(event["end"]["dateTime"])
+                except KeyError:
+                    event["end"]["dateTime"] = 'No Time Specified'
             return self.render_to_response(context)
         else:
             return HttpResponseRedirect(request.oauth.get_authorize_redirect())
