@@ -102,7 +102,7 @@
          "peak_end":"09:30:00",
          "post_peak_easy_start":"12:00:00",
          "post_peak_easy_end":"16:00:00",
-         "peak_start":"05:00:00",
+         "peak_start":"00:00:00",
          "easy_start":"00:00:00",
          "easy_end":"03:30:00"
       },
