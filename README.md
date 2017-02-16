@@ -12,8 +12,8 @@ A personalized priority app to support a *Cognitive Behavioral Therapy* (CBT) ap
 
 *Neuropy* Considers what the habit/disorder the user wants to treat with CBT, along with medication, it's half-life and peak periods. Also works around black-out periods on user's schedule by syncing with Google Calender, personal preference or most productive period of the day for user, and finally considers time commitments for each activity. Each "TO-DO" will be ranked considering these aspects and will be worked into periods of the day.
 
-##### version-0.1 (in active development) 
-##### Keywords: 
+##### version-0.1 (in active development)
+##### Keywords:
 
 No medical data is stored by NeuroPy
 
@@ -55,6 +55,7 @@ This application allow users to store and organize photos.
 - The period which the user is up and active
 - The time of day when a user is best able to focus and work
 - The time of day when a user takes their medication
+- A __str__ method which returns the user's username.
 
 **The `Todo` model contains:**
 
@@ -65,17 +66,26 @@ This application allow users to store and organize photos.
 - Title of the task
 - Description
 - Priority level
+- A __str__ method which returns the task title
 
 **The `Medication` model contains:**
 
 - Name
-- Type
+- Medication Type
 - Use (on or off label)
 - Half life
-- Time to begin metabolizing
+- Ramp-up time
+- Peak Period
+- Start and end times for the easy, medium and peak energy periods
+    represented as a comma seperated set of integers where the first
+    integer represents the number of hours since the user took the
+    medicaion, and the second integer representing the number of extra
+    minutes.
+- A __str__ method which returns the medication's name
 
 ##Current URL Routes
 
+- `/oauth2/` Google calendar request authorization
 - `/admin` Superuser admin page.
 - `/` Home page.
 - `/login` Login page.
@@ -83,6 +93,15 @@ This application allow users to store and organize photos.
 - `/accounts/register` Register a user form.
 - `/accounts/activate/complete/` Activation complete view.
 - `/accounts/register/complete/` Registration complete, email sent.
+- `/profile/` Links to the following routes:
+    - `/` Shows the user their profile data.
+    - `/edit/` Allows the user to edit their profile
+- `/profile/todo/ Links to the following routes:
+    - `/schedule/` Allows the user to view their schedule
+    - `/[todo_id]/edit/` Allows the user to edit their to-do items
+    - `/[todo_id]/` Detail view for an individula to-do item
+    - `/add/` Allows the user to create a new to-do item
+    - `/` Shows the user a summary of all their to-do items
 
 
 ##Running Tests
