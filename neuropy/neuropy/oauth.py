@@ -25,7 +25,7 @@ def auth_return(request):
     if not xsrfutil.validate_token(settings.SECRET_KEY, request.GET['state'],
                                    request.user):
         return HttpResponseBadRequest()
-    credential = FLOW.step2_exchange(request.GET['code'].encode())
+    credential = FLOW.step2_exchange(request.GET['code'])
     storage = DjangoORMStorage(CredentialsModel, 'user_id', request.user, 'credential')
     storage.put(credential)
     return HttpResponseRedirect("/")

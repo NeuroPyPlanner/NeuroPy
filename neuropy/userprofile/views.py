@@ -55,11 +55,11 @@ class ProfileFormView(LoginRequiredMixin, FormView):
         medication = form.cleaned_data['medication']
         priority_list = create_event_list(medication.name, self.request.user.profile)
 
-        storage = DjangoORMStorage(CredentialsModel, 'user_id', request.user, 'credential')
+        storage = DjangoORMStorage(CredentialsModel, 'user_id', self.request.user, 'credential')
         credential = storage.get()
         if credential is None or credential.invalid:
             FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY,
-                                                           request.user)
+                                                           self.request.user)
             authorize_url = FLOW.step1_get_authorize_url()
             return HttpResponseRedirect(authorize_url)
         else:
@@ -74,10 +74,11 @@ class ProfileFormView(LoginRequiredMixin, FormView):
                     google_event['colorId'] = 2
                 else:
                     google_event['colorId'] = 11
+                    
                 google_event['description'] = event['description']
-                google_event['summary'] = event['summary']
-                google_event['start'] = {'dateTime': str(event['start'])}
-                google_event['end'] = {'dateTime': str(event['end'])}
+                google_event['summary'] = event['title']
+                google_event['start'] = {'dateTime': event['start'].isoformat() + '-08:00'}
+                google_event['end'] = {'dateTime': event['end'].isoformat() + '-08:00'}
                 google_event['reminders'] = {
                     'useDefault': False,
                     'overrides': [
@@ -85,8 +86,9 @@ class ProfileFormView(LoginRequiredMixin, FormView):
                         {'method': 'popup', 'minutes': 10},
                     ]
                 }
-
-                calender_insert(http, {})
+                calender_insert(http, google_event, self.request.user.email)
+                event['start'] = event['start'].strftime("%H:%M")
+                event['end'] = event['end'].strftime("%H:%M")
 
         self.request.session['some_list'] = priority_list
         return HttpResponseRedirect(self.get_success_url())
