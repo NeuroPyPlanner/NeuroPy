@@ -23,7 +23,6 @@ from neuropy.oauth import auth_return
 
 
 urlpatterns = [
-    # url(r'^oauth2/', include(django_util_site.urls)),
     url(r'^oauth2callback', auth_return),
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name="neuropy/home.html"),
