@@ -1,30 +1,13 @@
-{% extends "layout.html" %}
-
-{% block nav %}
-
-<nav class="navbar ">
-  <div class="container-fluid">
-    <div class="collapse navbar-collapse" id="myNavbar">
-
-    <div class="col-lg-9"></div>
-      <ul class="nav navbar-nav topBar">
-        <li class="active"><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-      </ul>
-    <div class="col-lg-2"></div>
-
-    </div>
-  </div>
-</nav>
-{%endblock%}
+{% extends 'neuropy/layout.html' %}
 
 
-{% block body %}
+
+{% block content %}
 <div class="row">
 <div class="col-sm-1"></div>
   <div class="col-sm-10">
-    <div class="panel panel-primary">
-      <div class="panel-heading">NeuroPy</div>
+    <div>
+      <div>NeuroPy</div>
       <div class="panel-body"></div>
       <div class="panel-footer"></div>
     </div>
@@ -32,32 +15,32 @@
 </div>
 <div class="container">
   <div class="row">
-    <div class="col-sm-4"> 
-      <div class="panel panel-primary">
-        <div class="panel-heading">Sera Smith</div>
-        <div class="panel-body"><img src="../static/sera.jpg" class="img-responsive" style="width:100%" alt="Image"></div>
-        <div class="panel-footer">Hi, I am Sera. I was born and raised in Tokyo, Japan until Age 11. I then moved to Seattle where I stayed until graduating from University of Washington with a degree in Criminal Psychology and Classical Japanese. I am bilingual and have 2 Shib Inu's. I was also a Shiba Inu breeder while living in NV after UW. </div>
+    <div class="col-sm-3"> 
+      <div>
+        <div>Sera Smith</div>
+        <div><img src="../static/sera.jpg" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div>Hi, I am Sera. I was born and raised in Tokyo, Japan until Age 11. I then moved to Seattle where I stayed until graduating from University of Washington with a degree in Criminal Psychology and Classical Japanese. I am bilingual and have 2 Shiba Inu's. I was also a Shiba Inu breeder while living in NV after UW. I am a Python developer.</div>
       </div>
     </div>
-    <div class="col-sm-4">
-      <div class="panel panel-primary">
-        <div class="panel-heading"></div>
-        <div class="panel-body"><img src="http://placehold.it/350x150" style="width:100%" alt="Image"></div>
-        <div class="panel-footer">.</div>
+    <div class="col-sm-3">
+      <div>
+        <div></div>
+        <div><img src="../static/neuropy/Amos.jpg" style="width:100%" alt="Image"></div>
+        <div>Hi, I am Amos I love to code. Python rules everything else drools. I am Python developer.</div>
       </div>
     </div>
-    <div class="col-sm-4"> 
-      <div class="panel panel-primary">
-        <div class="panel-heading"></div>
-        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
-        <div class="panel-footer">.</div>
+    <div class="col-sm-3"> 
+      <div>
+        <div></div>
+        <div><img src="../static/neuropy/Claire.jpg" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div>I am a born and bred Australian who made the wild decision to quit my job and move to Seattle where I am learning how to code. I dream of using my past life as a scientist and my new skills as a developer to move into bioinformatics. I love cats, staying active, travelling, the outdoors and taking photos. I am Python developer.</div>
       </div>
     </div>
-    <div class="col-sm-4"> 
-      <div class="panel panel-primary">
-        <div class="panel-heading"></div>
-        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
-        <div class="panel-footer">.</div>
+    <div class="col-sm-3"> 
+      <div>
+        <div></div>
+        <div><img src="../static/neuropy/patrick.jpg" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div>Hi, I am Patrick. I am a new, starry-eyed software developer. I am happiest when his tests are passing or at least when they’re failing in a predictable way. I am Python developer.</div>
       </div>
     </div>
   </div>
