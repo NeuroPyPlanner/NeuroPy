@@ -63,11 +63,3 @@ class MedicationTestCase(TestCase):
         medication.delete()
         with self.assertRaises(Medication.DoesNotExist):
             Medication.objects.get(id=medication.id)
-
-    def test_delete_med(self):
-        """Test adding after deleting medication."""
-        medication = self.medications[1]
-        medication = Medication.objects.get(id=medication.id)
-        medication.delete()
-        with self.assertRaises(Medication.DoesNotExist):
-            Medication.objects.get(id=medication.id)
