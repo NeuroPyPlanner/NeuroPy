@@ -1,7 +1,7 @@
 """Tests for the userprofile app."""
 
 from django.test import TestCase, Client, RequestFactory
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import User, Group
 from userprofile.models import Profile, CredentialsModel
 import factory
 from django.core.urlresolvers import reverse_lazy
@@ -119,6 +119,23 @@ class FrontendTestCases(TestCase):
         response = self.client.get(reverse_lazy('home'))
         self.assertTemplateUsed(response, "neuropy/base.html")
         self.assertTemplateUsed(response, "neuropy/home.html")
+
+    def test_home_route_status(self):
+        """Test home route status is 200."""
+        response = self.client.get(reverse_lazy('home'))
+        self.assertTrue(response.status_code == 200)
+
+    def test_about_route_status(self):
+        """Test about route status is 200."""
+        response = self.client.get(reverse_lazy('about'))
+        self.assertTrue(response.status_code == 200)
+
+    def test_about_route_templates(self):
+        """Test about route templates are correct."""
+        response = self.client.get(reverse_lazy('about'))
+        self.assertTemplateUsed(response, "neuropy/base.html")
+        self.assertTemplateUsed(response, "neuropy/layout.html")
+        self.assertTemplateUsed(response, "neuropy/about.html")
 
     def test_login_redirect_code(self):
         """Test built-in login route redirects properly."""
