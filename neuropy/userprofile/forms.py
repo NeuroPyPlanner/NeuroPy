@@ -29,14 +29,6 @@ class ProfileForm(forms.ModelForm):
 class MedicationForm(forms.Form):
     """Create a form allowing the user to base the schedule on a medication."""
 
-    MEDICATION_CHOICES = (
-        ("CONCERTA", "Concerta"),
-        ("ADDERALL", "Adderall"),
-        ("FOCALIN", "Focalin"),
-        ("Ritalin LA", "Ritalin LA"),
-        ("Vyvanse", "Vyvanse")
-    )
-
     medication = forms.ModelChoiceField(
         widget=forms.RadioSelect,
         queryset=Medication.objects.all(),

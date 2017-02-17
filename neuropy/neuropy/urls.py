@@ -19,14 +19,17 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 from registration.backends.hmac.views import RegistrationView
 from registration.forms import RegistrationFormTermsOfService
-import oauth2client.contrib.django_util.site as django_util_site
+from neuropy.oauth import auth_return
 
 
 urlpatterns = [
-    url(r'^oauth2/', include(django_util_site.urls)),
+    # url(r'^oauth2/', include(django_util_site.urls)),
+    url(r'^oauth2callback', auth_return),
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name="neuropy/home.html"),
         name='home'),
+    url(r'^about/', TemplateView.as_view(template_name="neuropy/about.html"),
+        name='about'),
     url(r'^accounts/register/$',
         RegistrationView.as_view(form_class=RegistrationFormTermsOfService),
         name='registration_register'),

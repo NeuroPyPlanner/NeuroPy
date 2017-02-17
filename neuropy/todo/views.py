@@ -15,6 +15,13 @@ from django.shortcuts import get_object_or_404
 from apiclient import discovery
 import datetime
 import dateutil.parser
+from userprofile.models import CredentialsModel
+from oauth2client.contrib.django_util.storage import DjangoORMStorage
+from oauth2client.contrib import xsrfutil
+import httplib2
+import os
+from neuropy import settings
+from oauth2client.client import flow_from_clientsecrets
 
 
 class AddTodo(LoginRequiredMixin, CreateView):
@@ -115,6 +122,14 @@ def calender_update(http, event):
     event = service.events().update(calendarId='prmary', body=event).execute()
     return event
 
+CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'neuropy', 'client_secret.json')
+
+FLOW = flow_from_clientsecrets(
+    CLIENT_SECRETS,
+    scope='https://www.googleapis.com/auth/calendar',
+    redirect_uri='http://localhost:8000/oauth2callback'
+)
+
 
 def create_event_list(drug_name, profile):
     """Create dictionary objects to be inserted into google cal."""
@@ -175,7 +190,16 @@ class ScheduleView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         """Get the data and render."""
         context = self.get_context_data(**kwargs)
-        if request.oauth.has_credentials() and not request.oauth.credentials.access_token_expired:
+        storage = DjangoORMStorage(CredentialsModel, 'user_id', request.user, 'credential')
+        credential = storage.get()
+        if credential is None or credential.invalid:
+            FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY,
+                                                           request.user)
+            authorize_url = FLOW.step1_get_authorize_url()
+            return HttpResponseRedirect(authorize_url)
+        else:
+            http = httplib2.Http()
+            http = credential.authorize(http)
             now = str(datetime.datetime.now()).split()[0]
             events = calendar_get(request.oauth.http, now)
             context["events"] = events
@@ -189,8 +213,6 @@ class ScheduleView(LoginRequiredMixin, TemplateView):
                 except KeyError:
                     event["end"]["dateTime"] = 'No Time Specified'
             return self.render_to_response(context)
-        else:
-            return HttpResponseRedirect(request.oauth.get_authorize_redirect())
 
 
 class CreateScheduleView(LoginRequiredMixin, TemplateView):
