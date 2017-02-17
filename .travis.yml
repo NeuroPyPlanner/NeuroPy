@@ -13,3 +13,6 @@ env:
 script:
   - cd neuropy
   - ./manage.py test
+
+notifications:
+  email: false
