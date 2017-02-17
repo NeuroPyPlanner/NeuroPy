@@ -1,13 +1,29 @@
 """Views for profile."""
 
+import os
+import httplib2
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, UpdateView, FormView
 from userprofile.forms import ProfileForm, MedicationForm
 from userprofile.models import Profile
-from todo.views import create_event_list
+from todo.views import create_event_list, calender_insert
+from userprofile.models import CredentialsModel
+from oauth2client.contrib.django_util.storage import DjangoORMStorage
+from oauth2client.contrib import xsrfutil
+from neuropy import settings
+from oauth2client.client import flow_from_clientsecrets
 
+
+
+CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'neuropy', 'client_secret.json')
+
+FLOW = flow_from_clientsecrets(
+    CLIENT_SECRETS,
+    scope='https://www.googleapis.com/auth/calendar',
+    redirect_uri='http://localhost:8000/oauth2callback'
+)
 
 class ProfileView(LoginRequiredMixin, DetailView):
     """View for profile."""
@@ -38,6 +54,18 @@ class ProfileFormView(LoginRequiredMixin, FormView):
         """Return HttpResponse when valid data is posted."""
         medication = form.cleaned_data['medication']
         priority_list = create_event_list(medication.name, self.request.user.profile)
+
+        storage = DjangoORMStorage(CredentialsModel, 'user_id', request.user, 'credential')
+        credential = storage.get()
+        if credential is None or credential.invalid:
+            FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY,
+                                                           request.user)
+            authorize_url = FLOW.step1_get_authorize_url()
+            return HttpResponseRedirect(authorize_url)
+        else:
+            http = httplib2.Http()
+            http = credential.authorize(http)
+
         self.request.session['some_list'] = priority_list
 
         return HttpResponseRedirect(self.get_success_url())
