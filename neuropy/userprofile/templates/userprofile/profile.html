@@ -27,7 +27,7 @@
 <form method="POST" action="{% url 'profile_form' %}">
 <p><strong> After creating Todo items, select your medication and generate your schedule<strong></p>
     {% csrf_token %}
-    {{ form }} <input type="submit" value="Generate Schedule" class="btn btn-primary"/>
+    {{ form.as_p }} <input type="submit" value="Generate Schedule" class="btn btn-primary"/>
 </form>
 </div>
 {% endif %}
