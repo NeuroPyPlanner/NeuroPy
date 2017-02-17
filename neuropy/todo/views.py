@@ -8,8 +8,9 @@ from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         UserPassesTestMixin,
                                         )
 from todo.models import Todo
-from todo.forms import TodoForm
+from medication.models import Medication
 from userprofile.models import Profile
+from todo.forms import TodoForm
 from django.shortcuts import get_object_or_404
 from apiclient import discovery
 import datetime
@@ -115,6 +116,57 @@ def calender_update(http, event):
     return event
 
 
+def create_event_list(drug_name, profile):
+    """Create dictionary objects to be inserted into google cal."""
+    today = datetime.date.today()
+
+    easy = Todo.objects.filter(owner=profile, date=today, ease=1)
+    medium = Todo.objects.filter(owner=profile, date=today, ease=2)
+    hard = Todo.objects.filter(owner=profile, date=today, ease=3)
+    priority_now = Todo.objects.filter(owner=profile, date=today, priority=4).order_by('ease')
+    bucket_list = [priority_now, hard, medium, easy]
+
+    today = datetime.date.today()
+    start_time = datetime.datetime(today.year, today.month, today.day, 9)
+
+    def td(time):
+        pt = datetime.datetime.strptime(time, '%H:%M:%S')
+        return pt.second + pt.minute + pt.hour * 3600
+
+    drug = Medication.objects.get(name=drug_name)
+    peak_end = start_time + datetime.timedelta(hours=td(drug.peak_end))
+    # medium_start = start_time + datetime.timedelta(hours=td(drug.post_peak_medium_start))
+    easy_start = start_time + datetime.timedelta(hours=td(drug.post_peak_easy_start))
+
+    events_list = []
+    for idx, bucket in enumerate(bucket_list):
+        priority_dict = {}
+
+        for event in bucket:
+            priority_dict['description'] = event.description
+            priority_dict['title'] = event.title
+            priority_dict['start'] = start_time
+            end_time = start_time + datetime.timedelta(hours=event.duration)
+            priority_dict['end'] = end_time
+
+            if idx == 0 or idx == 1:
+                priority_dict['ease'] = 'hard'
+
+            if idx == 2 and priority_dict['start'] < peak_end:
+                priority_dict['ease'] = 'hard'
+
+            elif idx == 3 and priority_dict['start'] < easy_start:
+                priority_dict['ease'] = 'medium'
+
+            priority_dict['start'] = start_time.strftime("%H:%M")
+            priority_dict['end'] = end_time.strftime("%H:%M")
+            events_list.append(dict(priority_dict))
+
+            start_time = start_time + datetime.timedelta(hours=event.duration)
+        print('priority_dict: ', priority_dict)
+    return events_list
+
+
 class ScheduleView(TemplateView):
     """Schedule View."""
 
@@ -128,8 +180,28 @@ class ScheduleView(TemplateView):
             events = calendar_get(request.oauth.http, now)
             context["events"] = events
             for event in events:
-                event["start"]["dateTime"] = dateutil.parser.parse(event["start"]["dateTime"])
-                event["end"]["dateTime"] = dateutil.parser.parse(event["end"]["dateTime"])
+                try:
+                    event["start"]["dateTime"] = dateutil.parser.parse(event["start"]["dateTime"])
+                except KeyError:
+                    event["start"]["dateTime"] = 'No Time Specified'
+                try:
+                    event["end"]["dateTime"] = dateutil.parser.parse(event["end"]["dateTime"])
+                except KeyError:
+                    event["end"]["dateTime"] = 'No Time Specified'
             return self.render_to_response(context)
         else:
             return HttpResponseRedirect(request.oauth.get_authorize_redirect())
+
+
+class CreateScheduleView(TemplateView):
+    """Prioritized Schedule View."""
+
+    template_name = "todo/create_schedule.html"
+
+    def get(self, request, *args, **kwargs):
+        """."""
+        priority_list = self.request.session['some_list']
+        context = self.get_context_data(**kwargs)
+        context['todos'] = priority_list
+
+        return self.render_to_response(context)
