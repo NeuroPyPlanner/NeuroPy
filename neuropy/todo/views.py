@@ -182,7 +182,7 @@ def create_event_list(drug_name, profile):
     return events_list
 
 
-class ScheduleView(TemplateView):
+class ScheduleView(LoginRequiredMixin, TemplateView):
     """Schedule View."""
 
     template_name = "todo/schedule_view.html"
@@ -215,7 +215,7 @@ class ScheduleView(TemplateView):
             return self.render_to_response(context)
 
 
-class CreateScheduleView(TemplateView):
+class CreateScheduleView(LoginRequiredMixin, TemplateView):
     """Prioritized Schedule View."""
 
     template_name = "todo/create_schedule.html"

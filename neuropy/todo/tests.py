@@ -434,3 +434,69 @@ class TodoFrontEndTestCase(TestCase):
         self.assertTrue('<p><strong>Ease: </strong>1</p>' in html)
         self.assertTrue('<p><strong>Duration: </strong>3</p>' in html)
         self.assertTrue('<p><strong>Description: </strong>Then Buy 7/11</p>' in html)
+
+    def test_logged_out_todo_fails(self):
+        """Test that a logged out user cannot create a todo."""
+        response = self.client.get(reverse_lazy('add_todo'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_logged_out_schedule_fails(self):
+        """Test that a logged out user cannot see a schedule."""
+        response = self.client.get(reverse_lazy('schedule'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_logged_out_edit_todo_fails(self):
+        """Test that a logged out user cannot edit a todo."""
+        response = self.client.get(reverse_lazy('edit_todo', kwargs={'pk': self.todos[0].id}))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_logged_out_detail_todo_fails(self):
+        """Test that a logged out user cannot see todo details."""
+        with self.assertRaises(AttributeError,):
+            self.client.get(reverse_lazy('show_todo', kwargs={'pk': self.todos[0].id}))
+
+    def test_logged_out_build_schedule_fails(self):
+        """Test that a logged out user cannot build a schedule."""
+        response = self.client.get(reverse_lazy('create_sched'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_edit_todo_without_csrf_fails(self):
+        """Test edit todo will fail without a csrf token."""
+        self.client.force_login(self.users[0])
+        html = self.client.get(reverse_lazy('edit_todo', kwargs={'pk': self.todos[0].id})).content
+        html = BeautifulSoup(html, "html5lib")
+        self.client.post(reverse_lazy('edit_todo', kwargs={'pk': self.todos[0].id}), {
+            "csrfmiddlewaretoken": "",
+            "title": "sam spade",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        self.assertFalse(self.todos[0].title == 'sam spade')
+
+    def test_add_todo_without_csrf_fails(self):
+        """Test add todo will fail without a csrf token."""
+        self.client.force_login(self.users[0])
+        html = self.client.get(reverse_lazy('add_todo')).content
+        html = BeautifulSoup(html, "html5lib")
+        self.client.post(reverse_lazy('add_todo'), {
+            "csrfmiddlewaretoken": "",
+            "title": "sam spade",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        with self.assertRaises(AttributeError):
+            self.todos[0].todo
