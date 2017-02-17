@@ -10,10 +10,10 @@ class Todo(models.Model):
     """Model for an individual Todo."""
 
     PRIORITY_CHOICES = (
-        (1, 'Now'),
-        (2, 'Urgent'),
-        (3, 'Semi Urgent'),
         (4, 'Non Urgent'),
+        (3, 'Urgent'),
+        (2, 'Semi-Urgent'),
+        (1, 'Now'),
     )
 
     EASE_CHOICES = (

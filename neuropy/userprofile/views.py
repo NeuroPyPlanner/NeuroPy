@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, UpdateView, FormView
 from userprofile.forms import ProfileForm, MedicationForm
 from userprofile.models import Profile
+from todo.views import create_event_list
 
 
 class ProfileView(LoginRequiredMixin, DetailView):
@@ -31,7 +32,15 @@ class ProfileFormView(LoginRequiredMixin, FormView):
     """Form view for reference by profile view so we can include a form."""
 
     form_class = MedicationForm
-    success_url = reverse_lazy('profile')
+    success_url = reverse_lazy('create_sched')
+
+    def form_valid(self, form):
+        """Return HttpResponse when valid data is posted."""
+        medication = form.cleaned_data['medication']
+        priority_list = create_event_list(medication.name, self.request.user.profile)
+        self.request.session['some_list'] = priority_list
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class EditProfile(LoginRequiredMixin, UpdateView):

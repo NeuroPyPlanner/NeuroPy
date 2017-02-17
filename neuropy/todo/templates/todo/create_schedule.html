@@ -1,0 +1,25 @@
+{% extends 'neuropy/layout.html' %}
+{% block content %}
+
+<div class="row">
+        <div class='page-header'>
+            <div class='btn-toolbar pull-right'>
+                <div class='btn-group'>
+                <a href="{% url 'add_todo' %}" class="btn">Add Todo</a>
+                {# <a href="{% url 'sync_calendar' %}" class="btn">Sync with Google Calender</a> #}
+                </div>
+        </div>
+        <h1>Your prioritized schedule for {% now "jS F Y" %}</h1>
+        </div>
+
+        {% for todo in todos %}
+            <h2>{{todo.title}}</h2>
+            <p>Start: {{ todo.start }}</p>
+            <p>End: {{ todo.end }}</p>
+            <p><strong>Description: </strong>{{todo.description}}</p>
+        {% endfor %}
+</div>
+
+
+</section>
+{% endblock %}
