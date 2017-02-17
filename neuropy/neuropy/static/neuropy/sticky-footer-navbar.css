@@ -94,3 +94,23 @@ code {
 .unstyled {
   list-style: none;
 }
+
+.color2 {
+  background-color: rgba(122, 231, 191, 0.5);
+}
+
+.color9 {
+  background-color: rgba(84, 132, 237, 0.5);
+}
+
+.color1 {
+  background-color: rgba(164, 189, 252, 0.5);
+}
+
+.color7 {
+  background-color: rgba(70, 214, 219, 0.5);
+}
+
+.color10 {
+  background-color: rgba(81, 183, 73, 0.5);
+}
