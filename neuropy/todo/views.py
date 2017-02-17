@@ -19,9 +19,8 @@ from userprofile.models import CredentialsModel
 from oauth2client.contrib.django_util.storage import DjangoORMStorage
 from oauth2client.contrib import xsrfutil
 import httplib2
-import os
 from neuropy import settings
-from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import OAuth2WebServerFlow
 
 
 class AddTodo(LoginRequiredMixin, CreateView):
@@ -122,12 +121,12 @@ def calender_update(http, event):
     event = service.events().update(calendarId='prmary', body=event).execute()
     return event
 
-CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'neuropy', 'client_secret.json')
-
-FLOW = flow_from_clientsecrets(
-    CLIENT_SECRETS,
+FLOW = OAuth2WebServerFlow(
+    client_id=settings.GOOGLE_OAUTH2_CLIENT_ID,
+    client_secret=settings.GOOGLE_OAUTH2_CLIENT_SECRET,
     scope='https://www.googleapis.com/auth/calendar',
-    redirect_uri='http://localhost:8000/oauth2callback'
+    redirect_uri='http://localhost:8000/oauth2callback',
+    prompt='consent'
 )
 
 
