@@ -22,29 +22,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='medication',
-            name='post_peak_easy_end',
-            field=models.CharField(default='', max_length=50, validators=[django.core.validators.RegexValidator(re.compile('^\\d+(?:\\,\\d+)*\\Z', 32), code='invalid', message='Enter only digits separated by commas.')]),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name='medication',
-            name='post_peak_easy_start',
-            field=models.CharField(default='', max_length=50, validators=[django.core.validators.RegexValidator(re.compile('^\\d+(?:\\,\\d+)*\\Z', 32), code='invalid', message='Enter only digits separated by commas.')]),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name='medication',
-            name='post_peak_medium_end',
-            field=models.CharField(default='', max_length=50, validators=[django.core.validators.RegexValidator(re.compile('^\\d+(?:\\,\\d+)*\\Z', 32), code='invalid', message='Enter only digits separated by commas.')]),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name='medication',
-            name='post_peak_medium_start',
-            field=models.CharField(default='', max_length=50, validators=[django.core.validators.RegexValidator(re.compile('^\\d+(?:\\,\\d+)*\\Z', 32), code='invalid', message='Enter only digits separated by commas.')]),
-            preserve_default=False,
-        ),
-        migrations.RunPython(load_medications_from_fixture)
+        migrations.RunPython(load_medications_from_fixture),
     ]
