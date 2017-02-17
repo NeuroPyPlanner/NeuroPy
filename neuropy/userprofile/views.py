@@ -66,8 +66,29 @@ class ProfileFormView(LoginRequiredMixin, FormView):
             http = httplib2.Http()
             http = credential.authorize(http)
 
-        self.request.session['some_list'] = priority_list
+            for event in priority_list:
+                google_event = {}
+                if event['ease'] == 'easy':
+                    google_event['colorId'] = 3
+                elif event['ease'] == 'medium':
+                    google_event['colorId'] = 2
+                else:
+                    google_event['colorId'] = 11
+                google_event['description'] = event['description']
+                google_event['summary'] = event['summary']
+                google_event['start'] = {'dateTime': str(event['start'])}
+                google_event['end'] = {'dateTime': str(event['end'])}
+                google_event['reminders'] = {
+                    'useDefault': False,
+                    'overrides': [
+                        {'method': 'email', 'minutes': 24 * 60},
+                        {'method': 'popup', 'minutes': 10},
+                    ]
+                }
 
+                calender_insert(http, {})
+
+        self.request.session['some_list'] = priority_list
         return HttpResponseRedirect(self.get_success_url())
 
 

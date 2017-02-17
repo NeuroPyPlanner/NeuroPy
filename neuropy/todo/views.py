@@ -157,6 +157,8 @@ def create_event_list(drug_name, profile):
 
             elif idx == 3 and priority_dict['start'] < easy_start:
                 priority_dict['ease'] = 'medium'
+            else:
+                priority_dict['ease'] = 'easy'
 
             priority_dict['start'] = start_time.strftime("%H:%M")
             priority_dict['end'] = end_time.strftime("%H:%M")
