@@ -259,7 +259,7 @@ class FrontendTestCases(TestCase):
         self.client.force_login(self.users[0])
         response = self.client.get(reverse_lazy('profile'))
         parsed_html = BeautifulSoup(response.content, "html5lib")
-        self.assertTrue(len(parsed_html.find_all('p')) == 3)
+        self.assertTrue(len(parsed_html.find_all('input')) == 7)
 
     def test_access_profile_without_login_fails(self):
         """Test that a user can't get into a profile without authenticating."""
