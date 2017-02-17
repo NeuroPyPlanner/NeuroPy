@@ -27,8 +27,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name="neuropy/home.html"),
         name='home'),
-    url(r'^about/', TemplateView.as_view(template_name="neuropy/about.html"),
-        name='about'),
     url(r'^accounts/register/$',
         RegistrationView.as_view(form_class=RegistrationFormTermsOfService),
         name='registration_register'),

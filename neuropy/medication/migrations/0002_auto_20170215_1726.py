@@ -22,5 +22,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(load_medications_from_fixture),
+        migrations.RunPython(load_medications_from_fixture)
     ]
