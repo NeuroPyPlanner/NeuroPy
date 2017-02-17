@@ -95,22 +95,48 @@ code {
   list-style: none;
 }
 
+.color1 {
+  background-color: rgba(164, 189, 252, 0.5);
+}
+
 .color2 {
   background-color: rgba(122, 231, 191, 0.5);
 }
 
-.color9 {
-  background-color: rgba(84, 132, 237, 0.5);
+.color3 {
+  background-color: rgba(219, 173, 255, 0.5);
 }
 
-.color1 {
-  background-color: rgba(164, 189, 252, 0.5);
+.color4 {
+  background-color: rgba(255, 136, 124, 0.5);
+}
+
+.color5 {
+  background-color: rgba(251, 215, 91, 0.5);
+}
+
+.color6 {
+  background-color: rgba(255, 184, 120, 0.5);
 }
 
 .color7 {
   background-color: rgba(70, 214, 219, 0.5);
 }
 
+.color8 {
+  background-color: rgba(225, 225, 225, 0.5);
+}
+
+.color9 {
+  background-color: rgba(84, 132, 237, 0.5);
+}
+
 .color10 {
   background-color: rgba(81, 183, 73, 0.5);
 }
+
+.color11 {
+  background-color: rgba(220, 33, 39, 0.5);
+}
+
+
