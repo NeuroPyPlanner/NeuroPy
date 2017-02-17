@@ -23,7 +23,6 @@ class TodoForm(forms.ModelForm):
             (2, 'Medium'),
             (3, 'Difficult'),
         )
-        # import pdb; pdb.set_trace()
         self.fields['title'] = forms.CharField(initial=self.instance.title)
         self.fields['description'] = forms.CharField(widget=forms.Textarea, initial=self.instance.description)
         self.fields['date'] = forms.DateField(widget=forms.SelectDateWidget(), initial=self.instance.date)
@@ -35,4 +34,4 @@ class TodoForm(forms.ModelForm):
         """Model for form and fields to exclude."""
 
         model = Todo
-        exclude = ['owner']
+        exclude = ['owner', 'start_time', 'end_time']
