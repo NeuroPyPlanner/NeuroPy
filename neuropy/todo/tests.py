@@ -4,10 +4,12 @@ from django.contrib.auth.models import User, Group
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse_lazy
 
+from todo.views import create_event_list
 from todo.models import Todo
 from userprofile.models import Profile
 import factory
 from bs4 import BeautifulSoup
+import datetime
 
 
 class TodoFactory(factory.django.DjangoModelFactory):
@@ -120,6 +122,30 @@ class TodoFrontEndTestCase(TestCase):
         self.users = [UserFactory.create() for i in range(20)]
         self.todos = [TodoFactory.create() for i in range(20)]
 
+    def generate_todos(self):
+        """Generate todos."""
+        user = self.users[5]
+        todo1 = self.todos[0]
+        todo2 = self.todos[2]
+        todo1.owner, todo2.owner = user.profile, user.profile
+
+        todo1.date = datetime.date.today()
+        todo2.date = datetime.date.today()
+
+        todo1.ease = 1
+        todo2.ease = 2
+
+        todo1.priority = 2
+        todo2.priority = 3
+
+        todo1.duration = 1
+        todo2.duration = 2
+
+        user.save()
+        todo1.save()
+        todo2.save()
+        return user.profile, [todo1, todo2]
+
     def make_user_and_login(self):
         """Make user and login."""
         add_user_group()
@@ -144,7 +170,6 @@ class TodoFrontEndTestCase(TestCase):
         response = self.client.get(reverse_lazy("list_todo"))
         self.assertTrue(response.status_code == 200)
 
-    def test_todo_list_route_uses_right_templates(self):
         """Test todo list returns the right templates."""
         self.client.force_login(self.users[0])
         response = self.client.get(reverse_lazy("list_todo"))
@@ -434,3 +459,56 @@ class TodoFrontEndTestCase(TestCase):
         self.assertTrue('<p><strong>Ease: </strong>1</p>' in html)
         self.assertTrue('<p><strong>Duration: </strong>3</p>' in html)
         self.assertTrue('<p><strong>Description: </strong>Then Buy 7/11</p>' in html)
+
+    def test_todo_ease_level_is_correct(self):
+        """."""
+        profile, todos = self.generate_todos()
+        todos = create_event_list("CONCERTA", profile)
+        self.assertTrue(len(todos) == 2)
+
+    def test_todo_is_in_order(self):
+        """."""
+        profile, todo_lst = self.generate_todos()
+        todos = create_event_list("CONCERTA", profile)
+        self.assertTrue(todos[0]['title'] == todo_lst[1].title)
+        self.assertTrue(todos[1]['title'] == todo_lst[0].title)
+
+    def test_todos_are_correct_ease_level(self):
+        """."""
+        profile, todo_lst = self.generate_todos()
+        todos = create_event_list("CONCERTA", profile)
+        self.assertTrue(todos[0]['ease'] == 'hard')
+        self.assertTrue(todos[1]['ease'] == 'medium')
+
+    def test_todo_created_on_profile_on_wrong_date(self):
+        """."""
+        user = self.users[5]
+        todo1 = self.todos[0]
+        todo2 = self.todos[2]
+        todo1.owner, todo2.owner = user.profile, user.profile
+
+        todo1.date = datetime.date(1, 2, 3)
+        todo2.date = datetime.date(1, 2, 3)
+
+        todo1.ease = 1
+        todo2.ease = 2
+
+        todo1.priority = 2
+        todo2.priority = 3
+
+        todo1.duration = 1
+        todo2.duration = 2
+
+        user.save()
+        todo1.save()
+        todo2.save()
+
+        events = create_event_list('CONCERTA', user.profile)
+        self.assertFalse(events)
+
+    def test_todo_duration(self):
+        """."""
+        profile, todo_lst = self.generate_todos()
+        todos = create_event_list("CONCERTA", profile)
+        diff_todos_1 = todos[1]['end'] - todos[1]['start']
+        self.assertTrue(datetime.timedelta(hours=todo_lst[0].duration) == diff_todos_1)
