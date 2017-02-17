@@ -1,4 +1,6 @@
 # NeuroPy
+[![Build Status](https://travis-ci.org/NeuroPyPlanner/NeuroPy.svg?branch=development)](https://travis-ci.org/NeuroPyPlanner/NeuroPy)
+
 Personalized CBT-based priority planner
 
 ## Creators:
