@@ -5,9 +5,9 @@ Personalized CBT-based priority planner
 
 ## Creators:
 
-Amos Bolder | Claire Gatenby | Patrick Saunders | Sera Smith
+[Amos Bolder](https://github.com/amosboldor) | [Claire Gatenby](https://github.com/clair3st) | [Patrick Saunders](https://github.com/pasaunders) | [Sera Smith](https://github.com/serashioda)
 
-### URL: http://
+### URL: [HERE](http://ec2-52-14-126-118.us-east-2.compute.amazonaws.com/)
 
 ### About the App:
 A personalized priority app to support a *Cognitive Behavioral Therapy* (CBT) approach to efficiently organize your day according to a struggle/disorder that is effectively treated by CBT. CBT is a goal-oriented pyschotherapy treatment, taking a hands-on approach to problem solving. Goal of CBT is to change the patterns of thinking or behavior that are behind a person's difficulties, modifying their feelings and therefore their thinking and behavior overtime.
@@ -99,7 +99,8 @@ This application allow users to store and organize photos.
     - `/` Shows the user their profile data.
     - `/edit/` Allows the user to edit their profile
 - `/profile/todo/ Links to the following routes:
-    - `/schedule/` Allows the user to view their schedule
+    - `/calendar/` Allows the user to view their schedule
+    - `/schedule/` Shows the user's to-do list ordered by priority and difficulty
     - `/[todo_id]/edit/` Allows the user to edit their to-do items
     - `/[todo_id]/` Detail view for an individula to-do item
     - `/add/` Allows the user to create a new to-do item
