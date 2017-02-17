@@ -1,6 +1,5 @@
 """Views for profile."""
 
-import os
 import httplib2
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -13,16 +12,16 @@ from userprofile.models import CredentialsModel
 from oauth2client.contrib.django_util.storage import DjangoORMStorage
 from oauth2client.contrib import xsrfutil
 from neuropy import settings
-from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import OAuth2WebServerFlow
 
-
-CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'neuropy', 'client_secret.json')
-
-FLOW = flow_from_clientsecrets(
-    CLIENT_SECRETS,
+FLOW = OAuth2WebServerFlow(
+    client_id=settings.GOOGLE_OAUTH2_CLIENT_ID,
+    client_secret=settings.GOOGLE_OAUTH2_CLIENT_SECRET,
     scope='https://www.googleapis.com/auth/calendar',
-    redirect_uri='http://localhost:8000/oauth2callback'
+    redirect_uri='http://localhost:8000/oauth2callback',
+    prompt='consent'
 )
+
 
 class ProfileView(LoginRequiredMixin, DetailView):
     """View for profile."""
