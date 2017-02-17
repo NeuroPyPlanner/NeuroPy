@@ -579,3 +579,14 @@ class TodoFrontEndTestCase(TestCase):
         })
         with self.assertRaises(AttributeError):
             self.todos[0].todo
+
+    def test_schedule_view_returns(self):
+        """Test that schedule view returns the right page."""
+        self.client.force_login(self.users[0])
+        session = self.client.session
+        session['some_list'] = [{},{},{}]
+        session.save()
+        html = self.client.get(reverse_lazy('create_sched')).content
+        parsed_html = BeautifulSoup(html, "html5lib")
+        import pdb; pdb.set_trace()
+        self.assertTrue(len(parsed_html.find_all('div')) == 10)
