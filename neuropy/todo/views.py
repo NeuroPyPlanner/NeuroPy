@@ -4,7 +4,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, TemplateView
 from django.contrib.auth.mixins import (LoginRequiredMixin,
-                                        # PermissionRequiredMixin,
                                         UserPassesTestMixin,
                                         )
 from todo.models import Todo
@@ -47,7 +46,6 @@ class AddTodo(LoginRequiredMixin, CreateView):
 class EditTodo(LoginRequiredMixin, UpdateView):
     """Edit todo."""
 
-    # permission_required = "todo.change_todo"
     login_required = True
 
     model = Todo
@@ -149,7 +147,6 @@ def create_event_list(drug_name, profile):
 
     drug = Medication.objects.get(name=drug_name)
     peak_end = start_time + datetime.timedelta(hours=td(drug.peak_end))
-    # medium_start = start_time + datetime.timedelta(hours=td(drug.post_peak_medium_start))
     easy_start = start_time + datetime.timedelta(hours=td(drug.post_peak_easy_start))
 
     events_list = []
@@ -179,7 +176,6 @@ def create_event_list(drug_name, profile):
             events_list.append(dict(priority_dict))
 
             start_time = start_time + datetime.timedelta(hours=event.duration)
-        print('priority_dict: ', priority_dict)
     return events_list
 
 

@@ -588,5 +588,4 @@ class TodoFrontEndTestCase(TestCase):
         session.save()
         html = self.client.get(reverse_lazy('create_sched')).content
         parsed_html = BeautifulSoup(html, "html5lib")
-        import pdb; pdb.set_trace()
         self.assertTrue(len(parsed_html.find_all('div')) == 10)
