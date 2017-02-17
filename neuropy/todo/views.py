@@ -109,10 +109,10 @@ def calendar_get(http, date):
     return events_result.get('items', [])
 
 
-def calender_insert(http, event):
+def calender_insert(http, event, email):
     """Insert entries and calender."""
     service = discovery.build('calendar', 'v3', http=http)
-    event = service.events().insert(calendarId='prmary', body=event).execute()
+    event = service.events().insert(calendarId=email, body=event).execute()
     return event
 
 
@@ -172,9 +172,11 @@ def create_event_list(drug_name, profile):
 
             elif idx == 3 and priority_dict['start'] < easy_start:
                 priority_dict['ease'] = 'medium'
+            elif idx == 3:
+                priority_dict['ease'] = 'easy'
 
-            priority_dict['start'] = start_time.strftime("%H:%M")
-            priority_dict['end'] = end_time.strftime("%H:%M")
+            priority_dict['start'] = start_time
+            priority_dict['end'] = end_time
             events_list.append(dict(priority_dict))
 
             start_time = start_time + datetime.timedelta(hours=event.duration)
