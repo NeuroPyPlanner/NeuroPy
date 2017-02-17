@@ -127,7 +127,7 @@ CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'neuropy', 'clien
 FLOW = flow_from_clientsecrets(
     CLIENT_SECRETS,
     scope='https://www.googleapis.com/auth/calendar',
-    redirect_uri='http://localhost:8000/oauth2callback'
+    redirect_uri='http://ec2-52-14-126-118.us-east-2.compute.amazonaws.com/oauth2callback'
 )
 
 
