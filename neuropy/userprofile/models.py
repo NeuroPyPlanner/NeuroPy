@@ -4,6 +4,14 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import time
+from oauth2client.contrib.django_util.models import CredentialsField
+
+
+class CredentialsModel(models.Model):
+    """Google Credential Model."""
+
+    user_id = models.OneToOneField(User)
+    credential = CredentialsField()
 
 
 @python_2_unicode_compatible
@@ -16,12 +24,12 @@ class Profile(models.Model):
         on_delete=models.CASCADE
     )
     PEAK_PERIOD_CHOICES = [
-        ('early_bird', 'Early Bird'),
+        ('Early Bird', 'Early Bird'),
         ('morning', 'Morning'),
         ('midday', 'Midday'),
         ('afternoon', 'Afternoon'),
         ('evening', 'Evening'),
-        ('night_owl', 'Night Owl'),
+        ('Night Owl', 'Night Owl'),
     ]
     active_period_start = models.TimeField(default=time(hour=8))
     active_period_end = models.TimeField(default=time(hour=22))

@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from todo.models import Todo
 from userprofile.models import Profile
 import factory
+from bs4 import BeautifulSoup
 
 
 class TodoFactory(factory.django.DjangoModelFactory):
@@ -99,13 +100,13 @@ class TodoTestCase(TestCase):
 
     def test_assign_multiple_todos_to_single_user(self):
         """Test the many-to-one relationship between todo and user works."""
-        todo1 = Todo.objects.all()[0]
-        todo2 = Todo.objects.all()[1]
-        owner = Profile.objects.first()
-        todo1.user, todo2.user = owner, owner
+        todo1 = self.todos[4]
+        todo2 = self.todos[5]
+        owner = self.users[6].profile
+        todo1.owner, todo2.owner = owner, owner
         todo1.save()
         todo2.save()
-        self.assertTrue(Profile.todo.count() == 2)
+        self.assertTrue(owner.todo.count() == 2)
 
 
 class TodoFrontEndTestCase(TestCase):
@@ -118,6 +119,24 @@ class TodoFrontEndTestCase(TestCase):
         add_user_group()
         self.users = [UserFactory.create() for i in range(20)]
         self.todos = [TodoFactory.create() for i in range(20)]
+
+    def make_user_and_login(self):
+        """Make user and login."""
+        add_user_group()
+        user_register = UserFactory.create()
+        user_register.is_active = True
+        user_register.username = "bobdole"
+        user_register.first_name = 'Bob'
+        user_register.last_name = 'Dole'
+        user_register.email = 'awesome@gmail.com'
+        user_register.set_password("rutabega")
+        user_register.save()
+        self.client.post("/login/", {
+            "username": user_register.username,
+            "password": "rutabega"
+
+        })
+        return self.client, user_register
 
     def test_todo_list_route_is_status_ok(self):
         """Funcional test for todo list."""
@@ -154,7 +173,330 @@ class TodoFrontEndTestCase(TestCase):
     def test_edit_todo_default_values(self):
         """Test that the response when calling the edit todo views includes default values."""
         todo = self.todos[0]
+        self.client.force_login(self.users[0])
         response = self.client.get(reverse_lazy(
-            'todo:edit_todo', kwargs={'pk': todo.id})
+            'edit_todo', kwargs={'pk': todo.id})
         )
         self.assertTrue('Edit a To-Do item' in response.content.decode())
+
+    def test_todo_list_route_displays_correctly(self):
+        """Test todo list route displays correctly."""
+        self.client.force_login(self.users[0])
+        user = self.users[0]
+        todo = self.todos[3]
+        todo.owner = user.profile
+        todo.save()
+        response = self.client.get(reverse_lazy("list_todo"))
+        parsed_html = BeautifulSoup(response.content, 'html5lib')
+        self.assertTrue(len(parsed_html.find_all('article')) == 1)
+
+    def test_edit_todo_will_change_template(self):
+        """Test edit todo will redirect to profile."""
+        client, user = self.make_user_and_login()
+        todo = self.todos[9]
+        todo.owner = user.profile
+        todo.save()
+
+        response = client.post('/profile/todo/' + str(todo.id) + '/edit/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        }, follow=True)
+        self.assertTrue(b'Todo 1' in response.content)
+
+    def test_edit_todo_will_redirect_to_todo_list(self):
+        """Test edit todo will redirect to todo list."""
+        client, user = self.make_user_and_login()
+        todo = self.todos[9]
+        todo.owner = user.profile
+        todo.save()
+
+        response = client.post('/profile/todo/' + str(todo.id) + '/edit/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        self.assertRedirects(response, '/profile/todo/')
+
+    def test_add_todo_will_redirect_to_todo_list(self):
+        """Test add todo will redirect to todo list."""
+        client, user = self.make_user_and_login()
+
+        response = client.post('/profile/todo/add/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        self.assertRedirects(response, '/profile/todo/')
+
+    def test_add_todo_will_redirect_with_new_content(self):
+        """Test add todo will redirect to todo list with new content."""
+        client, user = self.make_user_and_login()
+
+        response = client.post('/profile/todo/add/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        }, follow=True)
+        self.assertTrue(b'Todo 1' in response.content)
+
+    def test_add_with_missing_fields_will_not_redirect(self):
+        """Test add todo will not redirect if fields missing."""
+        client, user = self.make_user_and_login()
+
+        response = client.post('/profile/todo/add/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+        })
+        self.assertFalse(response.status_code == 302)
+
+    def test_edit_with_missing_fields_will_not_redirect(self):
+        """Test add todo will not redirect if fields missing."""
+        client, user = self.make_user_and_login()
+        todo = self.todos[9]
+        todo.owner = user.profile
+        todo.save()
+
+        response = client.post('/profile/todo/' + str(todo.id) + '/edit/', {
+            "title": "Todo 1",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+        })
+        self.assertFalse(response.status_code == 302)
+
+    def test_add_todo_status_code_302(self):
+        """Test add todo status code 302."""
+        user = self.users[4]
+        self.client.force_login(user)
+        html = self.client.get('/profile/todo/add/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        response = self.client.post('/profile/todo/add/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Google",
+            "description": "Then Buy Amazon",
+            "date_month": "1",
+            "date_day": "6",
+            "date_year": "2017",
+            "duration": "4",
+            "ease": "2",
+            "priority": "1",
+        })
+        self.assertTrue(response.status_code == 302)
+
+    def test_add_todo_saves_db_and_shows_to_list(self):
+        """Test add todo saves db and shows to list."""
+        user = self.users[4]
+        self.client.force_login(user)
+        html = self.client.get('/profile/todo/add/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        self.client.post('/profile/todo/add/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Google",
+            "description": "Then Buy Amazon",
+            "date_month": "1",
+            "date_day": "6",
+            "date_year": "2017",
+            "duration": "4",
+            "ease": "2",
+            "priority": "1",
+        })
+        html = self.client.get('/profile/todo/').content
+        html = str(html)
+        self.assertTrue('Buy Google' in html)
+        self.assertTrue('Priority: 1' in html)
+
+    def test_add_todo_saves_db_and_shows_to_detail_todo_view(self):
+        """Test add todo saves db and shows to detail todo view."""
+        user = self.users[4]
+        self.client.force_login(user)
+        html = self.client.get('/profile/todo/add/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        self.client.post('/profile/todo/add/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Google",
+            "description": "Then Buy Amazon",
+            "date_month": "1",
+            "date_day": "6",
+            "date_year": "2017",
+            "duration": "4",
+            "ease": "2",
+            "priority": "1",
+        })
+        pk = Todo.objects.get(title='Buy Google').id
+        html = self.client.get('/profile/todo/' + str(pk)).content
+        html = str(html)
+        self.assertTrue('Buy Google' in html)
+        self.assertTrue('<p><strong>Priority: </strong>1</p>' in html)
+        self.assertTrue('<p><strong>Ease: </strong>2</p>' in html)
+        self.assertTrue('<p><strong>Duration: </strong>4</p>' in html)
+        self.assertTrue('<p><strong>Description: </strong>Then Buy Amazon</p>' in html)
+
+    def test_edit_todo_status_code_302(self):
+        """Test edit todo status code 302."""
+        user = self.users[4]
+        self.client.force_login(user)
+        html = self.client.get('/profile/todo/add/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        self.client.post('/profile/todo/add/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Google",
+            "description": "Then Buy Amazon",
+            "date_month": "1",
+            "date_day": "6",
+            "date_year": "2017",
+            "duration": "4",
+            "ease": "2",
+            "priority": "1",
+        })
+        pk = Todo.objects.get(title='Buy Google').id
+        html = self.client.get('/profile/todo/' + str(pk) + '/edit/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        response = self.client.post('/profile/todo/' + str(pk) + '/edit/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Earth",
+            "description": "Then Buy 7/11",
+            "date_month": "2",
+            "date_day": "7",
+            "date_year": "2018",
+            "duration": "3",
+            "ease": "1",
+            "priority": "1",
+        })
+        self.assertTrue(response.status_code == 302)
+
+    def test_edit_todo_saves_db_and_shows_to_detail_todo_view(self):
+        """Test edit todo saves db and shows to detail todo view."""
+        user = self.users[4]
+        self.client.force_login(user)
+        html = self.client.get('/profile/todo/add/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        self.client.post('/profile/todo/add/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Google",
+            "description": "Then Buy Amazon",
+            "date_month": "1",
+            "date_day": "6",
+            "date_year": "2017",
+            "duration": "4",
+            "ease": "2",
+            "priority": "1",
+        })
+        pk = Todo.objects.get(title='Buy Google').id
+        html = self.client.get('/profile/todo/' + str(pk) + '/edit/').content
+        html = BeautifulSoup(html, "html5lib")
+        csrf = html.find("input", {"name": 'csrfmiddlewaretoken'})['value']
+        self.client.post('/profile/todo/' + str(pk) + '/edit/', {
+            "csrfmiddlewaretoken": csrf,
+            "title": "Buy Earth",
+            "description": "Then Buy 7/11",
+            "date_month": "2",
+            "date_day": "7",
+            "date_year": "2018",
+            "duration": "3",
+            "ease": "1",
+            "priority": "1",
+        })
+        html = self.client.get('/profile/todo/' + str(pk)).content
+        html = str(html)
+        self.assertTrue('Buy Earth' in html)
+        self.assertTrue('<p><strong>Priority: </strong>1</p>' in html)
+        self.assertTrue('<p><strong>Ease: </strong>1</p>' in html)
+        self.assertTrue('<p><strong>Duration: </strong>3</p>' in html)
+        self.assertTrue('<p><strong>Description: </strong>Then Buy 7/11</p>' in html)
+
+    def test_logged_out_todo_fails(self):
+        """Test that a logged out user cannot create a todo."""
+        response = self.client.get(reverse_lazy('add_todo'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_logged_out_schedule_fails(self):
+        """Test that a logged out user cannot see a schedule."""
+        response = self.client.get(reverse_lazy('schedule'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_logged_out_edit_todo_fails(self):
+        """Test that a logged out user cannot edit a todo."""
+        response = self.client.get(reverse_lazy('edit_todo', kwargs={'pk': self.todos[0].id}))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_logged_out_detail_todo_fails(self):
+        """Test that a logged out user cannot see todo details."""
+        with self.assertRaises(AttributeError,):
+            self.client.get(reverse_lazy('show_todo', kwargs={'pk': self.todos[0].id}))
+
+    def test_logged_out_build_schedule_fails(self):
+        """Test that a logged out user cannot build a schedule."""
+        response = self.client.get(reverse_lazy('create_sched'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_edit_todo_without_csrf_fails(self):
+        """Test edit todo will fail without a csrf token."""
+        self.client.force_login(self.users[0])
+        html = self.client.get(reverse_lazy('edit_todo', kwargs={'pk': self.todos[0].id})).content
+        html = BeautifulSoup(html, "html5lib")
+        self.client.post(reverse_lazy('edit_todo', kwargs={'pk': self.todos[0].id}), {
+            "csrfmiddlewaretoken": "",
+            "title": "sam spade",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        self.assertFalse(self.todos[0].title == 'sam spade')
+
+    def test_add_todo_without_csrf_fails(self):
+        """Test add todo will fail without a csrf token."""
+        self.client.force_login(self.users[0])
+        html = self.client.get(reverse_lazy('add_todo')).content
+        html = BeautifulSoup(html, "html5lib")
+        self.client.post(reverse_lazy('add_todo'), {
+            "csrfmiddlewaretoken": "",
+            "title": "sam spade",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        with self.assertRaises(AttributeError):
+            self.todos[0].todo

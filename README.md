@@ -1,17 +1,21 @@
 # NeuroPy
+[![Build Status](https://travis-ci.org/NeuroPyPlanner/NeuroPy.svg?branch=development)](https://travis-ci.org/NeuroPyPlanner/NeuroPy)
+
 Personalized CBT-based priority planner
 
-Creators:
+## Creators:
 
-Amos Bolder Claire Gatenby Patrick Saunders Sera Smith
+[Amos Bolder](https://github.com/amosboldor) | [Claire Gatenby](https://github.com/clair3st) | [Patrick Saunders](https://github.com/pasaunders) | [Sera Smith](https://github.com/serashioda)
 
-URL: http://
+### URL: [HERE](http://ec2-52-14-126-118.us-east-2.compute.amazonaws.com/)
 
+### About the App:
 A personalized priority app to support a *Cognitive Behavioral Therapy* (CBT) approach to efficiently organize your day according to a struggle/disorder that is effectively treated by CBT. CBT is a goal-oriented pyschotherapy treatment, taking a hands-on approach to problem solving. Goal of CBT is to change the patterns of thinking or behavior that are behind a person's difficulties, modifying their feelings and therefore their thinking and behavior overtime.
 
 *Neuropy* Considers what the habit/disorder the user wants to treat with CBT, along with medication, it's half-life and peak periods. Also works around black-out periods on user's schedule by syncing with Google Calender, personal preference or most productive period of the day for user, and finally considers time commitments for each activity. Each "TO-DO" will be ranked considering these aspects and will be worked into periods of the day.
 
-version-0.1 (in active development) Keywords:
+##### version-0.1 (in active development)
+##### Keywords:
 
 No medical data is stored by NeuroPy
 
@@ -53,6 +57,7 @@ This application allow users to store and organize photos.
 - The period which the user is up and active
 - The time of day when a user is best able to focus and work
 - The time of day when a user takes their medication
+- A __str__ method which returns the user's username.
 
 **The `Todo` model contains:**
 
@@ -63,17 +68,26 @@ This application allow users to store and organize photos.
 - Title of the task
 - Description
 - Priority level
+- A __str__ method which returns the task title
 
 **The `Medication` model contains:**
 
 - Name
-- Type
+- Medication Type
 - Use (on or off label)
 - Half life
-- Time to begin metabolizing
+- Ramp-up time
+- Peak Period
+- Start and end times for the easy, medium and peak energy periods
+    represented as a comma seperated set of integers where the first
+    integer represents the number of hours since the user took the
+    medicaion, and the second integer representing the number of extra
+    minutes.
+- A __str__ method which returns the medication's name
 
 ##Current URL Routes
 
+- `/oauth2/` Google calendar request authorization
 - `/admin` Superuser admin page.
 - `/` Home page.
 - `/login` Login page.
@@ -81,11 +95,21 @@ This application allow users to store and organize photos.
 - `/accounts/register` Register a user form.
 - `/accounts/activate/complete/` Activation complete view.
 - `/accounts/register/complete/` Registration complete, email sent.
+- `/profile/` Links to the following routes:
+    - `/` Shows the user their profile data.
+    - `/edit/` Allows the user to edit their profile
+- `/profile/todo/ Links to the following routes:
+    - `/calendar/` Allows the user to view their schedule
+    - `/schedule/` Shows the user's to-do list ordered by priority and difficulty
+    - `/[todo_id]/edit/` Allows the user to edit their to-do items
+    - `/[todo_id]/` Detail view for an individula to-do item
+    - `/add/` Allows the user to create a new to-do item
+    - `/` Shows the user a summary of all their to-do items
 
 
 ##Running Tests
 
-Running tests for the django-imager is fairly straightforward. Navigate to the same directory as the manage.py file and type:
+Running tests for the NeuroPy is fairly straightforward. Navigate to the same directory as the manage.py file and type:
 ```
 (NeuroPy) $ coverage run manage.py test
 ```
@@ -121,4 +145,3 @@ This will read from the included .coverage file, with configuration set in the .
 - As a developer I want a narrow open source license so that we retain plenty of rights to our work.
 - As a developer I want to write an algorithm that prioritises todos based on a user’s profile.
 - As a developer I want to integrate the google calendars with my app using an api.
-

@@ -2,6 +2,7 @@
 
 from django import forms
 from userprofile.models import Profile
+from medication.models import Medication
 
 
 class ProfileForm(forms.ModelForm):
@@ -23,3 +24,13 @@ class ProfileForm(forms.ModelForm):
 
         model = Profile
         exclude = []
+
+
+class MedicationForm(forms.Form):
+    """Create a form allowing the user to base the schedule on a medication."""
+
+    medication = forms.ModelChoiceField(
+        widget=forms.RadioSelect,
+        queryset=Medication.objects.all(),
+        empty_label=None
+    )

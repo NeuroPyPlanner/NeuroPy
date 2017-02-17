@@ -1,0 +1,64 @@
+{% extends 'neuropy/layout.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="row">
+        <div class='page-header'>
+        <h1>About Neuropy</h1>
+        </div>
+</div>
+
+<p>A personalized priority app to support a Cognitive Behavioral Therapy (CBT) approach to efficiently organize your day according to a struggle/disorder that is effectively treated by CBT. CBT is a goal-oriented pyschotherapy treatment, taking a hands-on approach to problem solving. Goal of CBT is to change the patterns of thinking or behavior that are behind a person's difficulties, modifying their feelings and therefore their thinking and behavior overtime.</p>
+
+<p>Neuropy Considers what the habit/disorder the user wants to treat with CBT, along with medication, it's half-life and peak periods. Also works around black-out periods on user's schedule by syncing with Google Calender, personal preference or most productive period of the day for user, and finally considers time commitments for each activity. Each "TO-DO" will be ranked considering these aspects and will be worked into periods of the day.</p>
+
+<a href="{% url 'registration_register' %}" class="btn btn-lg btn-default">Join Today!</a>
+
+<div class='page-header'>
+        <h1>About the developers</h1>
+        </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3"> 
+      <div>
+        <h4>Sera Smith</h4>
+        <div><img src="{% static 'neuropy/sera.jpg' %}" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div>Hi, I am Sera. I was born and raised in Tokyo, Japan until Age 11. I then moved to Seattle where I stayed until graduating from University of Washington with a degree in Criminal Psychology and Classical Japanese. I am bilingual and have 2 Shiba Inu's. I was also a Shiba Inu breeder while living in NV after UW. I am a Python developer.</div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div>
+        <h4>Amos Bolder</h4>
+        <div><img src="{% static 'neuropy/Amos.jpg' %}" style="width:100%" alt="Image"></div>
+        <div>Hi, I am Amos I love to code. Python rules everything else drools. I am Python developer.</div>
+      </div>
+    </div>
+    <div class="col-sm-3"> 
+      <div>
+        <h4>Claire Gatenby</h4>
+        <div><img src="{% static 'neuropy/Claire.jpg' %}" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div>I am a born and bred Australian who made the wild decision to quit my job and move to Seattle where I am learning how to code. I dream of using my past life as a scientist and my new skills as a developer to move into bioinformatics. I love cats, staying active, travelling, the outdoors and taking photos. I am Python developer.</div>
+      </div>
+    </div>
+    <div class="col-sm-3"> 
+      <div>
+        <h4>Patrick Saunders</h4>
+        <div><img src="{% static 'neuropy/patrick.jpg' %}" class="img-responsive" style="width:100%" alt="Image"></div>
+        <div>Hi, I am Patrick. I am a new, starry-eyed software developer. I am happiest when his tests are passing or at least when they’re failing in a predictable way. I'm excited about python but I'm also looking forward to expanding my set of languages.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+<div class="col-sm-5"></div>
+  <div class="col-sm-6"><img src="../static/neuropy/icon.png\" class="img-responsive">
+  </div>
+</div>
+
+<br><br>
+
+
+{%endblock%}

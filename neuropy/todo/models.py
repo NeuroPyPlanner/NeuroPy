@@ -10,10 +10,10 @@ class Todo(models.Model):
     """Model for an individual Todo."""
 
     PRIORITY_CHOICES = (
-        (1, 'Now'),
-        (2, 'Urgent'),
-        (3, 'Semi Urgent'),
         (4, 'Non Urgent'),
+        (3, 'Urgent'),
+        (2, 'Semi-Urgent'),
+        (1, 'Now'),
     )
 
     EASE_CHOICES = (
@@ -24,8 +24,10 @@ class Todo(models.Model):
 
     title = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    date = models.DateTimeField(blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
     duration = models.PositiveIntegerField(default=1)
+    start_time = None
+    end_time = None
     ease = models.PositiveIntegerField(choices=EASE_CHOICES, default=1)
     priority = models.PositiveIntegerField(choices=PRIORITY_CHOICES, default=4)
     owner = models.ForeignKey(Profile,

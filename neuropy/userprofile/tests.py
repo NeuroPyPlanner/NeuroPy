@@ -1,8 +1,8 @@
 """Tests for the userprofile app."""
 
 from django.test import TestCase, Client, RequestFactory
-from django.contrib.auth.models import User, Group, Permission
-from userprofile.models import Profile
+from django.contrib.auth.models import User, Group
+from userprofile.models import Profile, CredentialsModel
 import factory
 from django.core.urlresolvers import reverse_lazy
 
@@ -77,14 +77,24 @@ class ProfileTestCase(TestCase):
             for attribute in attributes:
                 self.assertTrue(hasattr(user.profile, attribute))
 
+    def test_credentials_model_has_user_id_attribute(self):
+        """Test Credentials Model has user_id attribute."""
+        self.assertTrue(hasattr(CredentialsModel, 'user_id'))
+
+    def test_credentials_model_has_credential_attribute(self):
+        """Test Credentials Model has credential attribute."""
+        self.assertTrue(hasattr(CredentialsModel, 'credential'))
+
 
 class FrontendTestCases(TestCase):
     """Test the frontend of the imager_profile site."""
 
     def setUp(self):
         """Set up client and request factory."""
+        add_user_group()
         self.client = Client()
         self.request = RequestFactory()
+        self.users = [UserFactory.create() for i in range(20)]
 
     def make_user_and_login(self):
         """Make user and login."""
@@ -109,6 +119,23 @@ class FrontendTestCases(TestCase):
         response = self.client.get(reverse_lazy('home'))
         self.assertTemplateUsed(response, "neuropy/base.html")
         self.assertTemplateUsed(response, "neuropy/home.html")
+
+    def test_home_route_status(self):
+        """Test home route status is 200."""
+        response = self.client.get(reverse_lazy('home'))
+        self.assertTrue(response.status_code == 200)
+
+    def test_about_route_status(self):
+        """Test about route status is 200."""
+        response = self.client.get(reverse_lazy('about'))
+        self.assertTrue(response.status_code == 200)
+
+    def test_about_route_templates(self):
+        """Test about route templates are correct."""
+        response = self.client.get(reverse_lazy('about'))
+        self.assertTemplateUsed(response, "neuropy/base.html")
+        self.assertTemplateUsed(response, "neuropy/layout.html")
+        self.assertTemplateUsed(response, "neuropy/about.html")
 
     def test_login_redirect_code(self):
         """Test built-in login route redirects properly."""
@@ -191,7 +218,7 @@ class FrontendTestCases(TestCase):
             "Email": "samglad@gmail.com",
             "active_period_start": "09:00:00",
             "active_period_end": "23:00:00",
-            "peak_period": "early_bird",
+            "peak_period": "afternoon",
             "dose_time": "09:00:00"
         })
         html = client.get('/profile/').content
@@ -201,7 +228,7 @@ class FrontendTestCases(TestCase):
         self.assertTrue('samglad@gmail.com' in html)
         self.assertTrue('9 a.m.' in html)
         self.assertTrue('11 p.m.' in html)
-        self.assertTrue('early_bird' in html)
+        self.assertTrue('afternoon' in html)
 
     def test_edit_will_redirect_to_profile(self):
         """Test edit will redirect to profile."""
@@ -216,7 +243,69 @@ class FrontendTestCases(TestCase):
             "Email": "samglad@gmail.com",
             "active_period_start": "09:00:00",
             "active_period_end": "23:00:00",
-            "peak_period": "early_bird",
+            "peak_period": "afternoon",
             "dose_time": "09:00:00"
         })
         self.assertRedirects(response, '/profile/')
+
+    def test_profile_templates(self):
+        """Test the profile templates are correct."""
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy('profile'))
+        self.assertTemplateUsed(response, "neuropy/base.html")
+        self.assertTemplateUsed(response, "neuropy/layout.html")
+        self.assertTemplateUsed(response, "userprofile/profile.html")
+
+    def test_edit_profile_templates(self):
+        """Test the edit profile templates are correct."""
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy('edit-profile'))
+        self.assertTemplateUsed(response, "neuropy/base.html")
+        self.assertTemplateUsed(response, "neuropy/layout.html")
+        self.assertTemplateUsed(response, "userprofile/edit_profile.html")
+
+    def test_profile_has_form(self):
+        """Test that the user profile page includes a medication form."""
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy('profile'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertTrue(len(parsed_html.find_all('form')) == 1)
+
+    def test_profile_form_has_medication_field(self):
+        """Test that the user profile page includes a medication form."""
+        self.client.force_login(self.users[0])
+        response = self.client.get(reverse_lazy('profile'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertTrue(len(parsed_html.find_all('input')) == 7)
+
+    def test_access_profile_without_login_fails(self):
+        """Test that a user can't get into a profile without authenticating."""
+        response = self.client.get(reverse_lazy('profile'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_access_edit_profile_without_login_fails(self):
+        """Test that a user can't edit a profile without authenticating."""
+        response = self.client.get(reverse_lazy('edit-profile'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_profile_redirect_login(self):
+        """Test that without a login, profile redirects to login."""
+        response = self.client.get(reverse_lazy('profile'))
+        self.assertRedirects(response, '/accounts/login/?next=/profile/')
+
+    def test_edit_profile_redirect_login(self):
+        """Test that without a login, profile redirects to login."""
+        response = self.client.get(reverse_lazy('edit-profile'))
+        self.assertRedirects(response, '/accounts/login/?next=/profile/edit/')
+
+    def test_edit_profile_without_csrf_fails(self):
+        """Test a logged in user can't edit their profile without a token."""
+        self.client.force_login(self.users[0])
+        html = self.client.get('/profile/edit/').content
+        html = BeautifulSoup(html, "html5lib")
+        self.client.post('/profile/edit/', {"csrfmiddlewaretoken": "", "First Name": "Bob"})
+        html = self.client.get('/profile/').content
+        html = str(html)
+        self.assertFalse('Bob Glad' in html)
