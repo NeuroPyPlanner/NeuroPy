@@ -13,17 +13,22 @@
         <h1 class='welcome'>Welcome <span class='name'>{{user.username}}</span>!</h1>
         </div>
 </div>
-<ul class="unstyled">
-    <li><strong>Name: </strong>{{user.first_name|title}} {{user.last_name|title}}</li>
-    <li><strong>Email: </strong><a href="mailto:{{user.email}}">{{user.email}}</a></li>
-    <li><strong>Active Period Start: </strong>{{ user.profile.active_period_start }}</li>
-    <li><strong>Active Period End: </strong>{{ user.profile.active_period_end }}</li>
-    <li><strong>Peak Period: </strong>{{ user.profile.peak_period }}</li>
-    <li><strong>Dose Time: </strong>{{ user.profile.dose_time }}</li>
-</ul>
+<div class="col-sm-6">
+    <p><strong>Name: </strong>{{user.first_name|title}} {{user.last_name|title}}</p>
+    <p><strong>Email: </strong><a href="mailto:{{user.email}}">{{user.email}}</a></p>
+    <p><strong>Active Period Start:     </strong>{{ user.profile.active_period_start }}</p>
+    <p><strong>Active Period End:     </strong>{{ user.profile.active_period_end }}</p>
+    <p><strong>Peak Period:     </strong>{{ user.profile.peak_period }}</p>
+    <p><strong>Dose Time:     </strong>{{ user.profile.dose_time }}</p>
+    <p><strong>Todos Created:     </strong>{{ user.profile.todo.count }}</p>
+</div>
+{% if user.profile.todo %}
+<div  class="form-section col-sm-6">
 <form method="POST" action="{% url 'profile_form' %}">
+<p><strong> After creating Todo items, select your medication and generate your schedule<strong></p>
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Generate Schedule" class="btn btn-primary"/>
+    {{ form.as_p }} <input type="submit" value="Generate Schedule" class="btn btn-primary"/>
 </form>
+</div>
+{% endif %}
 {% endblock %}
