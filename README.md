@@ -5,7 +5,7 @@ Personalized CBT-based priority planner
 
 ## Creators:
 
-Amos Bolder | Claire Gatenby | Patrick Saunders | Sera Smith
+[Amos Bolder](https://github.com/amosboldor) | [Claire Gatenby](https://github.com/clair3st) | [Patrick Saunders](https://github.com/pasaunders) | [Sera Smith](https://github.com/serashioda)
 
 ### URL: [HERE](http://ec2-52-14-126-118.us-east-2.compute.amazonaws.com/)
 
@@ -99,7 +99,8 @@ This application allow users to store and organize photos.
     - `/` Shows the user their profile data.
     - `/edit/` Allows the user to edit their profile
 - `/profile/todo/ Links to the following routes:
-    - `/schedule/` Allows the user to view their schedule
+    - `/calendar/` Allows the user to view their schedule
+    - `/schedule/` Shows the user's to-do list ordered by priority and difficulty
     - `/[todo_id]/edit/` Allows the user to edit their to-do items
     - `/[todo_id]/` Detail view for an individula to-do item
     - `/add/` Allows the user to create a new to-do item
