@@ -481,3 +481,22 @@ class TodoFrontEndTestCase(TestCase):
             "date_day": "2",
         })
         self.assertFalse(self.todos[0].title == 'sam spade')
+
+    def test_add_todo_without_csrf_fails(self):
+        """Test add todo will fail without a csrf token."""
+        self.client.force_login(self.users[0])
+        html = self.client.get(reverse_lazy('add_todo')).content
+        html = BeautifulSoup(html, "html5lib")
+        self.client.post(reverse_lazy('add_todo'), {
+            "csrfmiddlewaretoken": "",
+            "title": "sam spade",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        with self.assertRaises(AttributeError):
+            self.todos[0].todo
