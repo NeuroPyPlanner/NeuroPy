@@ -9,14 +9,15 @@
                 {# <a href="{% url 'sync_calendar' %}" class="btn">Sync with Google Calender</a> #}
                 </div>
         </div>
-        <h2>Your prioritized schedule for {{todo.date}}</h2>
+        <h1>Your prioritized schedule for {% now "jS F Y" %}</h1>
         </div>
 
-        {% for todo in todoes %}
+        {% for todo in todos %}
             <h2>{{todo.title}}</h2>
             <p><strong>Description: </strong>{{todo.description}}</p>
         {% endfor %}
-        <a href="{% url 'create_sched' todo.date %}" class="btn">Create Your Schedule</a>
+</div>
+
 
 </section>
 {% endblock %}
