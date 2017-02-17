@@ -463,3 +463,21 @@ class TodoFrontEndTestCase(TestCase):
         response = self.client.get(reverse_lazy('create_sched'))
         parsed_html = BeautifulSoup(response.content, "html5lib")
         self.assertFalse(parsed_html.find_all('div'))
+
+    def test_edit_todo_without_csrf_fails(self):
+        """Test edit todo will fail without a csrf token."""
+        self.client.force_login(self.users[0])
+        html = self.client.get(reverse_lazy('edit_todo', kwargs={'pk': self.todos[0].id})).content
+        html = BeautifulSoup(html, "html5lib")
+        self.client.post(reverse_lazy('edit_todo', kwargs={'pk': self.todos[0].id}), {
+            "csrfmiddlewaretoken": "",
+            "title": "sam spade",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        self.assertFalse(self.todos[0].title == 'sam spade')
