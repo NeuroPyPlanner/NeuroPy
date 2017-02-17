@@ -16,7 +16,6 @@ from neuropy import settings
 from oauth2client.client import flow_from_clientsecrets
 
 
-
 CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'neuropy', 'client_secret.json')
 
 FLOW = flow_from_clientsecrets(
@@ -74,7 +73,7 @@ class ProfileFormView(LoginRequiredMixin, FormView):
                     google_event['colorId'] = 2
                 else:
                     google_event['colorId'] = 11
-                    
+
                 google_event['description'] = event['description']
                 google_event['summary'] = event['title']
                 google_event['start'] = {'dateTime': event['start'].isoformat() + '-08:00'}
@@ -89,6 +88,7 @@ class ProfileFormView(LoginRequiredMixin, FormView):
                 calender_insert(http, google_event, self.request.user.email)
                 event['start'] = event['start'].strftime("%H:%M")
                 event['end'] = event['end'].strftime("%H:%M")
+            return HttpResponseRedirect(reverse_lazy('schedule'))
 
         self.request.session['some_list'] = priority_list
         return HttpResponseRedirect(self.get_success_url())
