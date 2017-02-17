@@ -4,10 +4,12 @@ from django.contrib.auth.models import User, Group
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse_lazy
 
+from todo.views import create_event_list
 from todo.models import Todo
 from userprofile.models import Profile
 import factory
 from bs4 import BeautifulSoup
+import datetime
 
 
 class TodoFactory(factory.django.DjangoModelFactory):
@@ -120,6 +122,30 @@ class TodoFrontEndTestCase(TestCase):
         self.users = [UserFactory.create() for i in range(20)]
         self.todos = [TodoFactory.create() for i in range(20)]
 
+    def generate_todos(self):
+        """Generate todos."""
+        user = self.users[5]
+        todo1 = self.todos[0]
+        todo2 = self.todos[2]
+        todo1.owner, todo2.owner = user.profile, user.profile
+
+        todo1.date = datetime.date.today()
+        todo2.date = datetime.date.today()
+
+        todo1.ease = 1
+        todo2.ease = 2
+
+        todo1.priority = 2
+        todo2.priority = 3
+
+        todo1.duration = 1
+        todo2.duration = 2
+
+        user.save()
+        todo1.save()
+        todo2.save()
+        return user.profile, [todo1, todo2]
+
     def make_user_and_login(self):
         """Make user and login."""
         add_user_group()
@@ -144,7 +170,6 @@ class TodoFrontEndTestCase(TestCase):
         response = self.client.get(reverse_lazy("list_todo"))
         self.assertTrue(response.status_code == 200)
 
-    def test_todo_list_route_uses_right_templates(self):
         """Test todo list returns the right templates."""
         self.client.force_login(self.users[0])
         response = self.client.get(reverse_lazy("list_todo"))
@@ -434,3 +459,134 @@ class TodoFrontEndTestCase(TestCase):
         self.assertTrue('<p><strong>Ease: </strong>1</p>' in html)
         self.assertTrue('<p><strong>Duration: </strong>3</p>' in html)
         self.assertTrue('<p><strong>Description: </strong>Then Buy 7/11</p>' in html)
+
+    def test_todo_ease_level_is_correct(self):
+        """Test todo ease level is correct."""
+        profile, todos = self.generate_todos()
+        todos = create_event_list("CONCERTA", profile)
+        self.assertTrue(len(todos) == 2)
+
+    def test_todo_is_in_order(self):
+        """Test todo is arranged in right order."""
+        profile, todo_lst = self.generate_todos()
+        todos = create_event_list("CONCERTA", profile)
+        self.assertTrue(todos[0]['title'] == todo_lst[1].title)
+        self.assertTrue(todos[1]['title'] == todo_lst[0].title)
+
+    def test_todos_are_correct_ease_level(self):
+        """Test todo is assigned to correct ease levels."""
+        profile, todo_lst = self.generate_todos()
+        todos = create_event_list("CONCERTA", profile)
+        self.assertTrue(todos[0]['ease'] == 'hard')
+        self.assertTrue(todos[1]['ease'] == 'medium')
+
+    def test_todo_created_on_profile_on_wrong_date(self):
+        """Test todo is created for current date."""
+        user = self.users[5]
+        todo1 = self.todos[0]
+        todo2 = self.todos[2]
+        todo1.owner, todo2.owner = user.profile, user.profile
+
+        todo1.date = datetime.date(1, 2, 3)
+        todo2.date = datetime.date(1, 2, 3)
+
+        todo1.ease = 1
+        todo2.ease = 2
+
+        todo1.priority = 2
+        todo2.priority = 3
+
+        todo1.duration = 1
+        todo2.duration = 2
+
+        user.save()
+        todo1.save()
+        todo2.save()
+
+        events = create_event_list('CONCERTA', user.profile)
+        self.assertFalse(events)
+
+    def test_todo_duration(self):
+        """Test todo duration is equal to diff between end and start time of todo."""
+        profile, todo_lst = self.generate_todos()
+        todos = create_event_list("CONCERTA", profile)
+        diff_todos_1 = todos[1]['end'] - todos[1]['start']
+        self.assertTrue(datetime.timedelta(hours=todo_lst[0].duration) == diff_todos_1)
+
+
+    def test_logged_out_todo_fails(self):
+        """Test that a logged out user cannot create a todo."""
+        response = self.client.get(reverse_lazy('add_todo'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_logged_out_schedule_fails(self):
+        """Test that a logged out user cannot see a schedule."""
+        response = self.client.get(reverse_lazy('schedule'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_logged_out_edit_todo_fails(self):
+        """Test that a logged out user cannot edit a todo."""
+        response = self.client.get(reverse_lazy('edit_todo', kwargs={'pk': self.todos[0].id}))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_logged_out_detail_todo_fails(self):
+        """Test that a logged out user cannot see todo details."""
+        with self.assertRaises(AttributeError,):
+            self.client.get(reverse_lazy('show_todo', kwargs={'pk': self.todos[0].id}))
+
+    def test_logged_out_build_schedule_fails(self):
+        """Test that a logged out user cannot build a schedule."""
+        response = self.client.get(reverse_lazy('create_sched'))
+        parsed_html = BeautifulSoup(response.content, "html5lib")
+        self.assertFalse(parsed_html.find_all('div'))
+
+    def test_edit_todo_without_csrf_fails(self):
+        """Test edit todo will fail without a csrf token."""
+        self.client.force_login(self.users[0])
+        html = self.client.get(reverse_lazy('edit_todo', kwargs={'pk': self.todos[0].id})).content
+        html = BeautifulSoup(html, "html5lib")
+        self.client.post(reverse_lazy('edit_todo', kwargs={'pk': self.todos[0].id}), {
+            "csrfmiddlewaretoken": "",
+            "title": "sam spade",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        self.assertFalse(self.todos[0].title == 'sam spade')
+
+    def test_add_todo_without_csrf_fails(self):
+        """Test add todo will fail without a csrf token."""
+        self.client.force_login(self.users[0])
+        html = self.client.get(reverse_lazy('add_todo')).content
+        html = BeautifulSoup(html, "html5lib")
+        self.client.post(reverse_lazy('add_todo'), {
+            "csrfmiddlewaretoken": "",
+            "title": "sam spade",
+            "description": "Some Text",
+            "duration": "1",
+            "priority": "1",
+            "ease": "1",
+            "date_month": "1",
+            "date_year": "2017",
+            "date_day": "2",
+        })
+        with self.assertRaises(AttributeError):
+            self.todos[0].todo
+
+    def test_schedule_view_returns(self):
+        """Test that schedule view returns the right page."""
+        self.client.force_login(self.users[0])
+        session = self.client.session
+        session['some_list'] = [{},{},{}]
+        session.save()
+        html = self.client.get(reverse_lazy('create_sched')).content
+        parsed_html = BeautifulSoup(html, "html5lib")
+        import pdb; pdb.set_trace()
+        self.assertTrue(len(parsed_html.find_all('div')) == 10)

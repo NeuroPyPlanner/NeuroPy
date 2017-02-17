@@ -23,10 +23,10 @@
         <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
           <li class="neuropy"><a href="{% url 'home' %}">NeuroPy</a></li>
-          <li class="neuropy"><a href="{% url 'about' %}">About</a></li>
         </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
+          <li><a href="{% url 'about' %}">About</a></li>
             <li><a href="{% url 'profile' %}">{{ user.username }}</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
             {% endif %}

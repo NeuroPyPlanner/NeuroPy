@@ -1,6 +1,5 @@
 """Views for profile."""
 
-import os
 import httplib2
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -13,17 +12,16 @@ from userprofile.models import CredentialsModel
 from oauth2client.contrib.django_util.storage import DjangoORMStorage
 from oauth2client.contrib import xsrfutil
 from neuropy import settings
-from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import OAuth2WebServerFlow
 
-
-
-CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'neuropy', 'client_secret.json')
-
-FLOW = flow_from_clientsecrets(
-    CLIENT_SECRETS,
+FLOW = OAuth2WebServerFlow(
+    client_id=settings.GOOGLE_OAUTH2_CLIENT_ID,
+    client_secret=settings.GOOGLE_OAUTH2_CLIENT_SECRET,
     scope='https://www.googleapis.com/auth/calendar',
-    redirect_uri='http://localhost:8000/oauth2callback'
+    redirect_uri='http://localhost:8000/oauth2callback',
+    prompt='consent'
 )
+
 
 class ProfileView(LoginRequiredMixin, DetailView):
     """View for profile."""
@@ -55,19 +53,43 @@ class ProfileFormView(LoginRequiredMixin, FormView):
         medication = form.cleaned_data['medication']
         priority_list = create_event_list(medication.name, self.request.user.profile)
 
-        storage = DjangoORMStorage(CredentialsModel, 'user_id', request.user, 'credential')
+        storage = DjangoORMStorage(CredentialsModel, 'user_id', self.request.user, 'credential')
         credential = storage.get()
         if credential is None or credential.invalid:
             FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY,
-                                                           request.user)
+                                                           self.request.user)
             authorize_url = FLOW.step1_get_authorize_url()
             return HttpResponseRedirect(authorize_url)
         else:
             http = httplib2.Http()
             http = credential.authorize(http)
 
-        self.request.session['some_list'] = priority_list
+            for event in priority_list:
+                google_event = {}
+                if event['ease'] == 'easy':
+                    google_event['colorId'] = 3
+                elif event['ease'] == 'medium':
+                    google_event['colorId'] = 2
+                else:
+                    google_event['colorId'] = 11
 
+                google_event['description'] = event['description']
+                google_event['summary'] = event['title']
+                google_event['start'] = {'dateTime': event['start'].isoformat() + '-08:00'}
+                google_event['end'] = {'dateTime': event['end'].isoformat() + '-08:00'}
+                google_event['reminders'] = {
+                    'useDefault': False,
+                    'overrides': [
+                        {'method': 'email', 'minutes': 24 * 60},
+                        {'method': 'popup', 'minutes': 10},
+                    ]
+                }
+                calender_insert(http, google_event, self.request.user.email)
+                event['start'] = event['start'].strftime("%H:%M")
+                event['end'] = event['end'].strftime("%H:%M")
+            return HttpResponseRedirect(reverse_lazy('schedule'))
+
+        self.request.session['some_list'] = priority_list
         return HttpResponseRedirect(self.get_success_url())
 
 

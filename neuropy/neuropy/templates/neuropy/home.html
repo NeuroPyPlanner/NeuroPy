@@ -22,6 +22,7 @@
               <nav>
                 <ul class="nav masthead-nav">
                   <li class="active"><a href="{% url 'home' %}">Home</a></li>
+                  <li><a href="{% url 'about' %}">About Us</a></li>
                   {% if user.is_authenticated %}
                   <li><a href="{% url 'logout' %}">Logout</a></li>
                   <li><a href="{% url 'profile' %}">{{ user.username }}</a></li>
