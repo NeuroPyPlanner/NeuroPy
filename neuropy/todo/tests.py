@@ -424,23 +424,6 @@ class TodoFrontEndTestCase(TestCase):
         })
         self.assertTrue(response.status_code == 302)
 
-    def test_priority_now_does_not_duplicate(self):
-        """Test that a priority to-do does not show as duplicate events."""
-        from todo.views import create_event_list
-        profile, todo_lst = self.generate_todos()
-        todos = create_event_list("CONCERTA", profile)
-        # import pdb; pdb.set_trace()
-        seen_tasks = []
-        # bucket_list = [priority_now, hard, medium, easy]
-        # for bucket in bucket_list:
-        for todo in todos:
-            if todo in seen_tasks:
-                raise ValueError("Todo already exists")
-            else:
-                seen_tasks.append(todo)
-        self.assertTrue(todos[0]['description'] == 'Todo 381' and todos[1]['description'] == 'Todo 381')
-        return seen_tasks
-
     def test_edit_todo_saves_db_and_shows_to_detail_todo_view(self):
         """Test edit todo saves db and shows to detail todo view."""
         user = self.users[4]
@@ -484,6 +467,7 @@ class TodoFrontEndTestCase(TestCase):
 
 
 # --------------- Algorithm Unittests ------------------
+
     def test_todo_ease_level_is_correct(self):
         """Test todo ease level is correct."""
         profile, todos = self.generate_todos()
@@ -536,6 +520,23 @@ class TodoFrontEndTestCase(TestCase):
         todos = create_event_list("CONCERTA", profile)
         diff_todos_1 = todos[1]['end'] - todos[1]['start']
         self.assertTrue(datetime.timedelta(hours=todo_lst[2].duration) == diff_todos_1)
+
+    def test_priority_now_does_not_duplicate(self):
+        """Test that a priority to-do does not show as duplicate events."""
+        from todo.views import create_event_list
+        profile, todo_lst = self.generate_todos()
+        todos = create_event_list("CONCERTA", profile)
+        # import pdb; pdb.set_trace()
+        seen_tasks = []
+        # bucket_list = [priority_now, hard, medium, easy]
+        # for bucket in bucket_list:
+        for todo in todos:
+            if todo in seen_tasks:
+                raise ValueError("Todo already exists")
+            else:
+                seen_tasks.append(todo)
+        self.assertTrue(todos[0]['description'] == 'Todo 381' and todos[1]['description'] == 'Todo 381')
+        return seen_tasks
 
 # -----------------------             ---------------------------
 
