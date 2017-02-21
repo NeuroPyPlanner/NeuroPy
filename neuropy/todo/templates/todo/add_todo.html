@@ -1,0 +1,19 @@
+{% extends 'neuropy/layout.html' %}
+{% block content %}
+<div class="row">
+        <div class='page-header'>
+            <div class='btn-toolbar pull-right'>
+                <div class='btn-group'>
+                </div>
+        </div>
+        <h1>Schedule a Todo item</h1>
+        </div>
+</div>
+<section class="form-section">
+    <form method="POST">
+        {% csrf_token %}
+         {{ form.as_p }}
+    <input type="submit" value="Create" class="btn btn-primary"/>
+    </form>
+</section>
+{% endblock content%}

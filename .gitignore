@@ -23,6 +23,15 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+envNeuro/
+.DS_Store
+bin/
+man/
+pip-selfcheck.json
+pyvenv.cfg
+share/
+
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

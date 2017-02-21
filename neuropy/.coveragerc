@@ -1,0 +1,21 @@
+[run]
+omit =
+   */migrations/*,
+   */tests.py
+   manage.py
+   neuropy/wsgi.py
+   neuropy/urls.py
+   neuropy/views.py
+   */envNeuro/*
+   */apps.py
+   */admin.py
+   */__init__.py
+
+source =
+   neuropy
+   medication
+   todo
+   userprofile
+
+[report]
+show_missing = True
