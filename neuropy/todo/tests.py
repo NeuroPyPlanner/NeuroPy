@@ -478,8 +478,8 @@ class TodoFrontEndTestCase(TestCase):
         """Test todo is arranged in right order."""
         profile, todo_lst = self.generate_todos()
         todos = create_event_list("CONCERTA", profile)
-        self.assertTrue(todos[0]['title'] == todo_lst[2].title)
         self.assertTrue(todos[2]['title'] == todo_lst[1].title)
+        self.assertTrue(todos[0]['title'] == todo_lst[2].title)
 
     def test_todos_are_correct_ease_level(self):
         """Test todo is assigned to correct ease levels."""
@@ -526,8 +526,8 @@ class TodoFrontEndTestCase(TestCase):
         from todo.views import create_event_list
         profile, todo_lst = self.generate_todos()
         todos = create_event_list("CONCERTA", profile)
-        # import pdb; pdb.set_trace()
         seen_tasks = []
+        # import pdb; pdb.set_trace()
         # bucket_list = [priority_now, hard, medium, easy]
         # for bucket in bucket_list:
         for todo in todos:
@@ -610,7 +610,7 @@ class TodoFrontEndTestCase(TestCase):
         """Test that schedule view returns the right page."""
         self.client.force_login(self.users[0])
         session = self.client.session
-        session['some_list'] = [{},{},{}]
+        session['some_list'] = [{}, {}, {}]
         session.save()
         html = self.client.get(reverse_lazy('create_sched')).content
         parsed_html = BeautifulSoup(html, "html5lib")

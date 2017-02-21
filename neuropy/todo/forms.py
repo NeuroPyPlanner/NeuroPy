@@ -12,16 +12,16 @@ class TodoForm(forms.ModelForm):
         super(TodoForm, self).__init__(*args, **kwargs)
 
         PRIORITY_CHOICES = (
-            (1, 'Now'),
-            (2, 'Urgent'),
-            (3, 'Semi Urgent'),
-            (4, 'Non Urgent'),
+            (4, 'Now'),
+            (3, 'Urgent'),
+            (2, 'Semi Urgent'),
+            (1, 'Non Urgent'),
         )
 
         EASE_CHOICES = (
-            (1, 'Easy'),
-            (2, 'Medium'),
             (3, 'Difficult'),
+            (2, 'Medium'),
+            (1, 'Easy'),
         )
         self.fields['title'] = forms.CharField(initial=self.instance.title)
         self.fields['description'] = forms.CharField(widget=forms.Textarea, initial=self.instance.description)
