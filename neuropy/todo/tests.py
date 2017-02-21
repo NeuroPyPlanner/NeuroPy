@@ -466,7 +466,6 @@ class TodoFrontEndTestCase(TestCase):
         self.assertTrue('<p><strong>Duration: </strong>3</p>' in html)
         self.assertTrue('<p><strong>Description: </strong>Then Buy 7/11</p>' in html)
 
-
 # --------------- Algorithm Unittests ------------------
 
     def test_todo_ease_level_is_correct(self):
@@ -528,9 +527,6 @@ class TodoFrontEndTestCase(TestCase):
         profile, todo_lst = self.generate_todos()
         todos = create_event_list("CONCERTA", profile)
         seen_tasks = []
-        # import pdb; pdb.set_trace()
-        # bucket_list = [priority_now, hard, medium, easy]
-        # for bucket in bucket_list:
         for todo in todos:
             if todo in seen_tasks:
                 raise ValueError("Todo already exists")
@@ -539,7 +535,7 @@ class TodoFrontEndTestCase(TestCase):
         self.assertTrue(todos[0]['description'] == 'Todo 381' and todos[1]['description'] == 'Todo 381')
         return seen_tasks
 
-# -----------------------             ---------------------------
+# --------------------- End Algorithm Unittests ---------------------
 
     def test_logged_out_todo_fails(self):
         """Test that a logged out user cannot create a todo."""

@@ -68,7 +68,6 @@ class ProfileTestCase(TestCase):
 
     def test_profile_has_attributes(self):
         """Test that the profile has attributes and assigns defaults."""
-        # import pdb; pdb.set_trace()
         users = self.users
         attributes = [
             'active_period_start', 'active_period_end', 'peak_period', 'dose_time'
