@@ -29,7 +29,6 @@ class Medication(models.Model):
     post_peak_medium_end = models.CharField(validators=[validate_comma_separated_integer_list], max_length=50)
     post_peak_easy_start = models.CharField(validators=[validate_comma_separated_integer_list], max_length=50)
     post_peak_easy_end = models.CharField(validators=[validate_comma_separated_integer_list], max_length=50)
-    # Ease_priority_matrix=models.CharField
 
     def __str__(self):
         """String representation of Medication."""

@@ -127,24 +127,30 @@ class TodoFrontEndTestCase(TestCase):
         user = self.users[5]
         todo1 = self.todos[0]
         todo2 = self.todos[2]
-        todo1.owner, todo2.owner = user.profile, user.profile
+        todo3 = self.todos[1]
+        todo1.owner, todo2.owner, todo3.owner = user.profile, user.profile, user.profile
 
         todo1.date = datetime.date.today()
         todo2.date = datetime.date.today()
+        todo3.date = datetime.date.today()
 
         todo1.ease = 1
         todo2.ease = 2
+        todo3.ease = 3
 
         todo1.priority = 2
         todo2.priority = 3
+        todo3.priority = 4
 
         todo1.duration = 1
         todo2.duration = 2
+        todo3.duration = 3
 
         user.save()
         todo1.save()
         todo2.save()
-        return user.profile, [todo1, todo2]
+        todo3.save()
+        return user.profile, [todo1, todo2, todo3]
 
     def make_user_and_login(self):
         """Make user and login."""
@@ -460,25 +466,27 @@ class TodoFrontEndTestCase(TestCase):
         self.assertTrue('<p><strong>Duration: </strong>3</p>' in html)
         self.assertTrue('<p><strong>Description: </strong>Then Buy 7/11</p>' in html)
 
+# --------------- Algorithm Unittests ------------------
+
     def test_todo_ease_level_is_correct(self):
         """Test todo ease level is correct."""
         profile, todos = self.generate_todos()
         todos = create_event_list("CONCERTA", profile)
-        self.assertTrue(len(todos) == 2)
+        self.assertTrue(len(todos) == 4)
 
     def test_todo_is_in_order(self):
         """Test todo is arranged in right order."""
         profile, todo_lst = self.generate_todos()
         todos = create_event_list("CONCERTA", profile)
-        self.assertTrue(todos[0]['title'] == todo_lst[1].title)
-        self.assertTrue(todos[1]['title'] == todo_lst[0].title)
+        self.assertTrue(todos[2]['title'] == todo_lst[1].title)
+        self.assertTrue(todos[0]['title'] == todo_lst[2].title)
 
     def test_todos_are_correct_ease_level(self):
         """Test todo is assigned to correct ease levels."""
         profile, todo_lst = self.generate_todos()
         todos = create_event_list("CONCERTA", profile)
         self.assertTrue(todos[0]['ease'] == 'hard')
-        self.assertTrue(todos[1]['ease'] == 'medium')
+        self.assertTrue(todos[1]['ease'] == 'hard')
 
     def test_todo_created_on_profile_on_wrong_date(self):
         """Test todo is created for current date."""
@@ -511,8 +519,23 @@ class TodoFrontEndTestCase(TestCase):
         profile, todo_lst = self.generate_todos()
         todos = create_event_list("CONCERTA", profile)
         diff_todos_1 = todos[1]['end'] - todos[1]['start']
-        self.assertTrue(datetime.timedelta(hours=todo_lst[0].duration) == diff_todos_1)
+        self.assertTrue(datetime.timedelta(hours=todo_lst[2].duration) == diff_todos_1)
 
+    def test_priority_now_does_not_duplicate(self):
+        """Test that a priority to-do does not show as duplicate events."""
+        from todo.views import create_event_list
+        profile, todo_lst = self.generate_todos()
+        todos = create_event_list("CONCERTA", profile)
+        seen_tasks = []
+        for todo in todos:
+            if todo in seen_tasks:
+                raise ValueError("Todo already exists")
+            else:
+                seen_tasks.append(todo)
+        self.assertTrue(todos[0]['description'] == 'Todo 381' and todos[1]['description'] == 'Todo 381')
+        return seen_tasks
+
+# --------------------- End Algorithm Unittests ---------------------
 
     def test_logged_out_todo_fails(self):
         """Test that a logged out user cannot create a todo."""
@@ -584,7 +607,7 @@ class TodoFrontEndTestCase(TestCase):
         """Test that schedule view returns the right page."""
         self.client.force_login(self.users[0])
         session = self.client.session
-        session['some_list'] = [{},{},{}]
+        session['some_list'] = [{}, {}, {}]
         session.save()
         html = self.client.get(reverse_lazy('create_sched')).content
         parsed_html = BeautifulSoup(html, "html5lib")

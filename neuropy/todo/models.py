@@ -10,16 +10,16 @@ class Todo(models.Model):
     """Model for an individual Todo."""
 
     PRIORITY_CHOICES = (
-        (4, 'Non Urgent'),
+        (4, 'Now'),
         (3, 'Urgent'),
-        (2, 'Semi-Urgent'),
-        (1, 'Now'),
+        (2, 'Semi Urgent'),
+        (1, 'Non Urgent'),
     )
 
     EASE_CHOICES = (
-        (1, 'Easy'),
-        (2, 'Medium'),
         (3, 'Difficult'),
+        (2, 'Medium'),
+        (1, 'Easy'),
     )
 
     title = models.CharField(max_length=255, blank=True)

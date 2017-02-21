@@ -138,7 +138,7 @@ def create_event_list(drug_name, profile):
     priority_now = Todo.objects.filter(owner=profile, date=today, priority=4).order_by('ease')
     bucket_list = [priority_now, hard, medium, easy]
 
-    today = datetime.date.today()
+    # today = datetime.date.today()
     start_time = datetime.datetime(today.year, today.month, today.day, 9)
 
     def td(time):
