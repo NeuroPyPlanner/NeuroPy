@@ -4,7 +4,7 @@ from django.test import TestCase
 from medication.models import Medication
 import factory
 import datetime
-
+import dateutil
 
 class MedicationTestCase(TestCase):
     """Test the Medication model."""
@@ -49,6 +49,20 @@ class MedicationTestCase(TestCase):
             else:
                 seen_meds.append(medication)
         return seen_meds
+
+    def test_peak_start_is_before_peak_end(self):
+        """Test that peak start time is before peak end."""
+        for medication in self.medications:
+            self.assertTrue(medication.peak_start < medication.peak_end)
+
+    def test_medication_duration(self):
+        """Test medication peak duration is equal to diff between peak-end and start."""
+        for medication in self.medications:
+            peak_end = dateutil.parser.parse(medication.peak_end)
+            peak_start = dateutil.parser.parse(medication.peak_start)
+            peak_delta = peak_end - peak_start
+            peak_period = medication.peak_period
+            self.assertTrue(peak_delta == peak_period)
 
     def test_change_data(self):
         """Test Editing medication data."""
