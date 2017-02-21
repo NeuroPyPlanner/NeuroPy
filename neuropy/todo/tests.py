@@ -11,6 +11,7 @@ import factory
 from bs4 import BeautifulSoup
 import datetime
 
+
 class TodoFactory(factory.django.DjangoModelFactory):
     """Create test instance of todos."""
 
